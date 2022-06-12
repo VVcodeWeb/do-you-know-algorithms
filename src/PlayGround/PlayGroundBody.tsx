@@ -1,10 +1,10 @@
-import { Col, Row } from "antd";
+import { Button, Col, Row } from "antd";
 import GameNumber, { GameNumberTypes } from "components/GameNumber";
-import { MAX_NUMBERS } from "const/constants";
 import React from "react";
 import { useEffect, useState } from "react";
 import { Flipped, Flipper } from "react-flip-toolkit";
 import { quickSort } from "utils/sorting";
+import { generateRandomNumbers } from "utils/utils";
 export type MoveJournalType = {
   swapIndexOne: number;
   swapIndexTwo: number;
@@ -13,58 +13,55 @@ export type MoveJournalType = {
 };
 
 type PlayGroundBodyType = {
-  gameIsOn: boolean;
+  isGameOn: boolean;
+  sortingRenderFinished: () => void;
+  startGame: () => void;
+  renderNextRound: boolean;
+  setRenderNextRound: React.Dispatch<React.SetStateAction<boolean>>;
 };
-const PlayGroundBody = ({ gameIsOn }: PlayGroundBodyType) => {
+const PlayGroundBody = ({
+  isGameOn,
+  sortingRenderFinished,
+  startGame,
+  renderNextRound,
+  setRenderNextRound,
+}: PlayGroundBodyType) => {
   const [currentNumbers, setCurrentNumbers] = useState<GameNumberTypes[]>([]);
   const [isSorted, setIsSorted] = useState<boolean>(false);
   const [moveJournal, setMoveJournal] = useState<MoveJournalType[]>([]);
-  const generateRandomNumbers = (): GameNumberTypes[] => {
-    let arr = [];
-    while (arr.length < MAX_NUMBERS) {
-      let r = Math.floor(Math.random() * 100) + 1;
-      if (arr.indexOf(r) === -1) arr.push(r);
+
+  /* Sort numbers with some delay, store every move in moveJournal */
+  useEffect(() => {
+    const delay = (ms: number) =>
+      new Promise((resolve) => setTimeout(resolve, ms));
+    const sortNumbers = async () => {
+      await delay(1500);
+      if (!isSorted && currentNumbers.length > 0) {
+        const { moveJournal: updatedMoveJournal } = quickSort(
+          currentNumbers.map((number) => number.value),
+          0,
+          currentNumbers.length - 1,
+          []
+        );
+        setMoveJournal(updatedMoveJournal);
+        setIsSorted(true);
+      }
+    };
+    if (currentNumbers) sortNumbers();
+  }, [currentNumbers, isSorted]);
+
+  useEffect(() => {
+    if (renderNextRound) {
+      setCurrentNumbers(generateRandomNumbers());
+      setIsSorted(false);
     }
-    return arr.map((value, index) => ({
-      value,
-      key: index,
-      id: value,
-    }));
-  };
-
-  const sortNumbers = () => {
-    if (!isSorted && currentNumbers.length > 0) {
-      const { moveJournal: updatedMoveJournal } = quickSort(
-        currentNumbers.map((number) => number.value),
-        0,
-        currentNumbers.length - 1,
-        []
-      );
-      setMoveJournal(updatedMoveJournal);
-      setIsSorted(true);
-    }
-  };
-  useEffect(() => {
-    console.log({ currentNumbers });
-  }, [currentNumbers]);
-
-  useEffect(() => {
-    if (gameIsOn) sortNumbers();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gameIsOn]);
-
-  useEffect(() => {
-    setCurrentNumbers(generateRandomNumbers());
-    setIsSorted(false);
-  }, []);
+  }, [renderNextRound]);
 
   useEffect(() => {
     if (moveJournal.length > 0) {
       if (!moveJournal[0].rendered) renderNextMove();
-      if (moveJournal[moveJournal.length - 1].rendered) allMovesRendered();
+      if (moveJournal[moveJournal.length - 1].rendered) sortingRenderFinished();
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [moveJournal]);
 
@@ -89,7 +86,6 @@ const PlayGroundBody = ({ gameIsOn }: PlayGroundBodyType) => {
     }
   };
 
-  const allMovesRendered = () => {};
   return (
     <Row
       align="middle"
@@ -100,24 +96,30 @@ const PlayGroundBody = ({ gameIsOn }: PlayGroundBodyType) => {
         backgroundColor: "#47D3EF",
       }}
     >
-      <Col span={20}>
-        <Flipper
-          flipKey={currentNumbers.map((number) => number.value).join("")}
-          onComplete={() => renderNextMove()}
-        >
-          <Row justify="space-evenly">
-            {currentNumbers?.map((number, index) => (
-              <Flipped key={number.value} flipId={number.value}>
-                <GameNumber
-                  value={number.value}
-                  key={number.value}
-                  id={number.value}
-                />
-              </Flipped>
-            ))}
-          </Row>
-        </Flipper>
-      </Col>
+      {isGameOn ? (
+        <Col span={20}>
+          <Flipper
+            flipKey={currentNumbers.map((number) => number.value).join("")}
+            onComplete={() => renderNextMove()}
+          >
+            <Row justify="space-evenly">
+              {currentNumbers?.map((number, index) => (
+                <Flipped key={number.value} flipId={number.value}>
+                  <GameNumber
+                    value={number.value}
+                    key={number.value}
+                    id={number.value}
+                  />
+                </Flipped>
+              ))}
+            </Row>
+          </Flipper>
+        </Col>
+      ) : (
+        <div>
+          <Button onClick={() => startGame()}>Start the game</Button>
+        </div>
+      )}
     </Row>
   );
 };
