@@ -1,11 +1,7 @@
 import RenderAlgorithmsGame from "RenderAlgorithmsGame";
 import "App.css";
 function App() {
-  return (
-    <div>
-      <RenderAlgorithmsGame />
-    </div>
-  );
+  return <RenderAlgorithmsGame />;
 }
 
 export default App;

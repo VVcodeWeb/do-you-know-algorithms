@@ -10,7 +10,7 @@ const textShadow = { textShadow: "1px 1px 2px black" };
 const GameNumber = ({ value, id, ...rest }: GameNumberTypes) => {
   return (
     <div style={{ display: "inline-block" }}>
-      <Col span={2} style={{ ...numbersStyle }}>
+      <Col span={1} style={{ ...numbersStyle }}>
         <Typography
           {...rest}
           style={{ color: "#fff", display: "inline-block" }}

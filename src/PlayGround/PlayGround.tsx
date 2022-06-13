@@ -36,15 +36,18 @@ const PlayGround = () => {
   };
 
   const handleTimeOut = () => {
-    setIsGameOn(false);
+    /* setIsGameOn(false);
     setAreOptionsVisible(false);
-    setRenderNextRound(false);
+    setRenderNextRound(false);*/
   };
   return (
     <div
       style={{
         ...colFlex,
         width: "100%",
+        paddingTop: 10,
+        backgroundColor: "#fef5ff",
+        height: "calc(100% - 120px)",
       }}
     >
       <PlayGroundHeader

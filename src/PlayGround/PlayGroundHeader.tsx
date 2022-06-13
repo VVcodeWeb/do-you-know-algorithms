@@ -1,13 +1,27 @@
-import { Col, Row } from "antd";
+import { Card, Col, Row } from "antd";
 import GameText from "components/GameText";
-import { colFlex } from "const/styles";
 import { ReactNode } from "react";
-import { CaretRightFilled } from "@ant-design/icons";
 import Timer from "components/Timer";
-const HeaderSquare = ({ children }: { children: ReactNode }) => {
+const HeaderSquare = ({
+  children,
+  title,
+}: {
+  children: ReactNode;
+  title: string;
+}) => {
   return (
-    <Col span={5} style={{ backgroundColor: "#F2F2F2", minHeight: "100px" }}>
-      {children}
+    <Col span={5} style={{ backgroundColor: "#F2F2F2" }}>
+      <Card
+        bordered={false}
+        title={
+          <GameText type="normal" styles={{ textTransform: "uppercase" }}>
+            {title}
+          </GameText>
+        }
+        style={{ height: "100%" }}
+      >
+        {children}
+      </Card>
     </Col>
   );
 };
@@ -27,39 +41,21 @@ const PlayGroundHeader = ({
 }: PlayGroundHeaderType) => {
   return (
     <Row justify={"center"} gutter={3} style={{ width: "100%" }}>
-      <HeaderSquare>
-        <div style={colFlex}>
-          <GameText level={3}>Timer</GameText>
-          <Timer
-            isGameOn={isGameOn}
-            timerKey={timerKey}
-            handleTimeOut={handleTimeOut}
-          />
-        </div>
+      <HeaderSquare title={"Timer"}>
+        <Timer
+          isGameOn={isGameOn}
+          timerKey={timerKey}
+          handleTimeOut={handleTimeOut}
+        />
       </HeaderSquare>
-      <HeaderSquare>
-        <div style={colFlex}>
-          <GameText level={3}>Score</GameText>
-          <GameText level={3}>{score}</GameText>
-        </div>
+      <HeaderSquare title={"Score"}>
+        <GameText type="normal">{score}</GameText>
       </HeaderSquare>
-      <HeaderSquare>
-        <div style={colFlex}>
-          <GameText level={3}>Difficulty</GameText>
-          <GameText level={3}>Medium</GameText>
-        </div>
+      <HeaderSquare title={"Difficulty"}>
+        <GameText type="normal">
+          Easy/<span style={{ color: "green" }}>Hard</span>
+        </GameText>
       </HeaderSquare>
-      {/* <HeaderSquare>
-        <div style={colFlex}>
-          <GameText level={3}>Actions</GameText>
-          <GameText level={3}>
-            <CaretRightFilled
-              style={{ color: "green", fontSize: "56px", cursor: "pointer" }}
-              onClick={() => alert("deprecated")}
-            />
-          </GameText>
-        </div>
-      </HeaderSquare> */}
     </Row>
   );
 };

@@ -13,6 +13,8 @@ export const generateRandomNumbers = (): GameNumberTypes[] => {
     id: value,
   }));
 };
+export const getRandomNumber = (max: number, min: number) =>
+  Math.floor(Math.random() * (max - min)) + min;
 
 export const getScore = (): number => {
   const min = 15;

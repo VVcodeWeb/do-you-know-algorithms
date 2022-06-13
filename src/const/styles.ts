@@ -2,7 +2,7 @@ import CSS from "csstype";
 export const colFlex: CSS.Properties = {
   display: "flex",
   flexDirection: "column",
-  justifyContent: "center",
+  justifyContent: "flex-begin",
   alignItems: "center",
 };
 export const numbersStyle: CSS.Properties = {
@@ -11,4 +11,11 @@ export const numbersStyle: CSS.Properties = {
   marginRight: "0.5rem",
   fontFamily: "Abril Fatface",
   lineHeight: 1,
+};
+
+export const optionStyle: CSS.Properties = {
+  border: 0,
+  padding: "5px, 15px",
+  minWidth: "50%",
+  minHeight: "60px",
 };

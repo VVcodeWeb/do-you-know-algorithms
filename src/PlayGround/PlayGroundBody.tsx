@@ -1,10 +1,13 @@
 import { Button, Col, Row } from "antd";
 import GameNumber, { GameNumberTypes } from "components/GameNumber";
+import GameText from "components/GameText";
+import { getColor } from "components/Option";
+import { optionStyle } from "const/styles";
 import React from "react";
 import { useEffect, useState } from "react";
 import { Flipped, Flipper } from "react-flip-toolkit";
 import { quickSort } from "utils/sorting";
-import { generateRandomNumbers } from "utils/utils";
+import { generateRandomNumbers, getRandomNumber } from "utils/utils";
 export type MoveJournalType = {
   swapIndexOne: number;
   swapIndexTwo: number;
@@ -35,7 +38,7 @@ const PlayGroundBody = ({
     const delay = (ms: number) =>
       new Promise((resolve) => setTimeout(resolve, ms));
     const sortNumbers = async () => {
-      await delay(1500);
+      await delay(1000);
       if (!isSorted && currentNumbers.length > 0) {
         const { moveJournal: updatedMoveJournal } = quickSort(
           currentNumbers.map((number) => number.value),
@@ -91,13 +94,15 @@ const PlayGroundBody = ({
       align="middle"
       justify="center"
       style={{
-        minHeight: "400px",
+        minHeight: "260px",
         width: "100%",
         backgroundColor: "#47D3EF",
+        borderTop: "3px solid #47afff",
+        borderBottom: "3px solid #47afff",
       }}
     >
       {isGameOn ? (
-        <Col span={20}>
+        <Col span={23}>
           <Flipper
             flipKey={currentNumbers.map((number) => number.value).join("")}
             onComplete={() => renderNextMove()}
@@ -116,9 +121,21 @@ const PlayGroundBody = ({
           </Flipper>
         </Col>
       ) : (
-        <div>
-          <Button onClick={() => startGame()}>Start the game</Button>
-        </div>
+        <Button
+          onClick={() => startGame()}
+          style={{
+            ...optionStyle,
+            minWidth: "0",
+            width: 250,
+            ...getColor(getRandomNumber(0, 3)),
+          }}
+        >
+          <GameText
+            styles={{ fontSize: "25px", color: "#fff", fontWeight: "bold" }}
+          >
+            Start the game
+          </GameText>
+        </Button>
       )}
     </Row>
   );

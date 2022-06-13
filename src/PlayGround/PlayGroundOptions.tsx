@@ -11,27 +11,38 @@ const PlayGroundOptions = ({
   handleAnswer,
 }: PlayGroundOptionsType) => {
   return (
-    <Row gutter={[16, 16]} style={{ minHeight: 200, paddingTop: 15 }}>
+    <Row
+      gutter={[30, 20]}
+      style={{
+        width: "100%",
+        backgroundColor: "#fef5ff",
+      }}
+      align={"middle"}
+    >
       <Option
-        text={"first option"}
+        text={"Merge sort"}
         isOptionVisible={areOptionsVisible}
         handleAnswer={handleAnswer}
+        index={0}
       />
       <Option
-        text={"second option"}
+        text={"Heap sort"}
         isOptionVisible={areOptionsVisible}
         handleAnswer={handleAnswer}
+        index={1}
       />
 
       <Option
-        text={"third option"}
+        text={"Quick sort"}
         isOptionVisible={areOptionsVisible}
         handleAnswer={handleAnswer}
+        index={2}
       />
       <Option
-        text={"fourth option"}
+        text={"Bubble sort"}
         isOptionVisible={areOptionsVisible}
         handleAnswer={handleAnswer}
+        index={3}
       />
     </Row>
   );
