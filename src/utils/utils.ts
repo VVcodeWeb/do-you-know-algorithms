@@ -1,5 +1,6 @@
 import { GameNumberTypes } from "components/GameNumber";
 import { MAX_NUMBERS } from "const/constants";
+import { MoveJournalType } from "PlayGround/PlayGroundBody";
 
 export const generateRandomNumbers = (): GameNumberTypes[] => {
   let arr = [];
@@ -27,4 +28,23 @@ export const shuffle = (array: any) => {
     .map((value: any) => ({ value, sort: Math.random() }))
     .sort((a: any, b: any) => a.sort - b.sort)
     .map(({ value }: { value: any }) => value);
+};
+
+
+export const swap = (
+  array: Array<any>,
+  index1: number,
+  index2: number,
+  moveJournal: Array<MoveJournalType>
+) => {
+  const temp = array[index2];
+  array[index2] = array[index1];
+  array[index1] = temp;
+  if (index1 !== index2)
+    moveJournal.push({
+      swapIndexOne: index1,
+      swapIndexTwo: index2,
+      step: moveJournal.length,
+      rendered: false,
+    });
 };

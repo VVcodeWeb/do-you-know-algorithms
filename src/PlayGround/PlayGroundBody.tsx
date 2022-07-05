@@ -41,12 +41,12 @@ const PlayGroundBody = ({
     const sortNumbers = async () => {
       await delay(1000);
       if (!isSorted && currentNumbers.length > 0) {
-        const { moveJournal: updatedMoveJournal } = quickSort(
-          currentNumbers.map((number) => number.value),
-          0,
-          currentNumbers.length - 1,
-          []
-        );
+        const { moveJournal: updatedMoveJournal } = quickSort({
+          array: currentNumbers.map((number) => number.value),
+          low: 0,
+          high: currentNumbers.length - 1,
+          moveJournal: [],
+        });
         setMoveJournal(updatedMoveJournal);
         setIsSorted(true);
       }
