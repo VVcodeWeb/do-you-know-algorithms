@@ -21,3 +21,10 @@ export const getScore = (): number => {
   const max = 25;
   return Math.floor(Math.random() * (max - min)) + min;
 };
+
+export const shuffle = (array: any) => {
+  return array
+    .map((value: any) => ({ value, sort: Math.random() }))
+    .sort((a: any, b: any) => a.sort - b.sort)
+    .map(({ value }: { value: any }) => value);
+};

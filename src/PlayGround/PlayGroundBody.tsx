@@ -21,6 +21,7 @@ type PlayGroundBodyType = {
   startGame: () => void;
   renderNextRound: boolean;
   setRenderNextRound: React.Dispatch<React.SetStateAction<boolean>>;
+  sortToUse: string | undefined;
 };
 const PlayGroundBody = ({
   isGameOn,

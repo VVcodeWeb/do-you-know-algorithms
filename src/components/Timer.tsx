@@ -4,14 +4,16 @@ const Timer = ({
   isGameOn,
   handleTimeOut,
   timerKey,
+  isTimerTicking,
 }: {
   isGameOn: boolean;
   handleTimeOut: () => void;
   timerKey: React.Key;
+  isTimerTicking: boolean;
 }) => (
   <CountdownCircleTimer
     key={timerKey}
-    isPlaying={isGameOn}
+    isPlaying={isGameOn && isTimerTicking}
     onComplete={handleTimeOut}
     duration={10}
     size={50}

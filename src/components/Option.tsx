@@ -6,7 +6,7 @@ import React from "react";
 type OptionType = {
   isOptionVisible: boolean;
   text: string;
-  handleAnswer: () => void;
+  handleAnswer: (userGuess: string) => void;
   index: number;
 };
 export const getColor = (index: number): CSS.Properties => {
@@ -37,8 +37,9 @@ const Option = ({ isOptionVisible, text, handleAnswer, index }: OptionType) => {
   return (
     <Col span={12} push={3}>
       <Button
-        onClick={() => handleAnswer()}
+        onClick={() => handleAnswer(text)}
         style={{ ...optionStyle, ...getColor(index) }}
+        disabled={!isOptionVisible}
       >
         <GameText
           styles={{

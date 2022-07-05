@@ -1,14 +1,15 @@
 import { Row } from "antd";
 import React from "react";
 import Option from "components/Option";
+import { OptionsType } from "PlayGround/PlayGround";
 type PlayGroundOptionsType = {
-  areOptionsVisible: boolean;
-  handleAnswer: () => void;
+  handleAnswer: (userGuess: string) => void;
+  options: Array<OptionsType>;
 };
 
 const PlayGroundOptions = ({
-  areOptionsVisible,
   handleAnswer,
+  options,
 }: PlayGroundOptionsType) => {
   return (
     <Row
@@ -19,31 +20,16 @@ const PlayGroundOptions = ({
       }}
       align={"middle"}
     >
-      <Option
-        text={"Merge sort"}
-        isOptionVisible={areOptionsVisible}
-        handleAnswer={handleAnswer}
-        index={0}
-      />
-      <Option
-        text={"Heap sort"}
-        isOptionVisible={areOptionsVisible}
-        handleAnswer={handleAnswer}
-        index={1}
-      />
-
-      <Option
-        text={"Quick sort"}
-        isOptionVisible={areOptionsVisible}
-        handleAnswer={handleAnswer}
-        index={2}
-      />
-      <Option
-        text={"Bubble sort"}
-        isOptionVisible={areOptionsVisible}
-        handleAnswer={handleAnswer}
-        index={3}
-      />
+      {options.map((option, index) => {
+        return (
+          <Option
+            text={option.sorting}
+            isOptionVisible={option.visible}
+            handleAnswer={handleAnswer}
+            index={index}
+          />
+        );
+      })}
     </Row>
   );
 };
