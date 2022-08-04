@@ -1,5 +1,9 @@
 import { MoveJournalType } from "PlayGround/PlayGroundBody";
-import { swap } from "utils/utils";
+import {
+  addComparisonMove,
+  addSwapMove,
+  swapAndSaveJournal,
+} from "utils/utils";
 type SortReturnType = {
   array: Array<any>;
   moveJournal: Array<MoveJournalType>;
@@ -29,12 +33,13 @@ const partion = ({ array, low, high, moveJournal }: QuickSortType) => {
   const pivot = array[high];
   let leftwall = low - 1;
   for (let i = low; i < high; i++) {
+    addComparisonMove(i, high, moveJournal);
     if (array[i] < pivot) {
       leftwall = leftwall + 1;
-      swap(array, i, leftwall, moveJournal);
+      swapAndSaveJournal(array, i, leftwall, moveJournal);
     }
   }
-  swap(array, high, leftwall + 1, moveJournal);
+  swapAndSaveJournal(array, high, leftwall + 1, moveJournal);
   return leftwall + 1;
 };
 
@@ -84,10 +89,13 @@ const merge = (
   let j = 0;
   let k = left;
   while (i < subArr1Length && j < subArr2Length) {
+    addComparisonMove(i + left, j + middle, moveJournal);
     if (arr1[i] <= arr2[j]) {
+      addSwapMove(k, i + left, moveJournal);
       array[k] = arr1[i];
       i++;
     } else {
+      addSwapMove(k, j + middle, moveJournal);
       array[k] = arr2[j];
       j++;
     }

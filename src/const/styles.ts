@@ -12,7 +12,9 @@ export const numbersStyle: CSS.Properties = {
   fontFamily: "Abril Fatface",
   lineHeight: 1,
 };
-
+export const nonActiveBar: string = "white";
+export const BarInComparison: string = "yellow";
+export const BarInSwap: string = "green";
 export const optionStyle: CSS.Properties = {
   border: 0,
   padding: "5px, 15px",

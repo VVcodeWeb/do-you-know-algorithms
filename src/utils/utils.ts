@@ -1,8 +1,8 @@
-import { GameNumberTypes } from "components/GameNumber";
 import { MAX_NUMBERS } from "const/constants";
-import { MoveJournalType } from "PlayGround/PlayGroundBody";
+import { nonActiveBar } from "const/styles";
+import { GameBarTypes, MoveJournalType } from "PlayGround/PlayGroundBody";
 
-export const generateRandomNumbers = (): GameNumberTypes[] => {
+export const generateRandomNumbers = (): GameBarTypes[] => {
   let arr = [];
   while (arr.length < MAX_NUMBERS) {
     let r = Math.floor(Math.random() * 100) + 1;
@@ -12,6 +12,7 @@ export const generateRandomNumbers = (): GameNumberTypes[] => {
     value,
     key: index,
     id: value,
+    color: nonActiveBar,
   }));
 };
 export const getRandomNumber = (max: number, min: number) =>
@@ -29,9 +30,34 @@ export const shuffle = (array: any) => {
     .sort((a: any, b: any) => a.sort - b.sort)
     .map(({ value }: { value: any }) => value);
 };
+export const addComparisonMove = (
+  index1: number,
+  index2: number,
+  moveJournal: Array<MoveJournalType>
+) => {
+  moveJournal.push({
+    rendered: false,
+    step: moveJournal.length,
+    indexOne: index1,
+    indexTwo: index2,
+    action: "comparison",
+  });
+};
 
-
-export const swap = (
+export const addSwapMove = (
+  index1: number,
+  index2: number,
+  moveJournal: Array<MoveJournalType>
+) => {
+  moveJournal.push({
+    rendered: false,
+    step: moveJournal.length,
+    indexOne: index1,
+    indexTwo: index2,
+    action: "swap",
+  });
+};
+export const swapAndSaveJournal = (
   array: Array<any>,
   index1: number,
   index2: number,
@@ -40,11 +66,5 @@ export const swap = (
   const temp = array[index2];
   array[index2] = array[index1];
   array[index1] = temp;
-  if (index1 !== index2)
-    moveJournal.push({
-      swapIndexOne: index1,
-      swapIndexTwo: index2,
-      step: moveJournal.length,
-      rendered: false,
-    });
+  if (index1 !== index2) addSwapMove(index1, index2, moveJournal);
 };

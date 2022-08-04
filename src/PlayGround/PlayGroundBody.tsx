@@ -1,20 +1,32 @@
 import { Button, Col, Row } from "antd";
-import GameNumber, { GameNumberTypes } from "components/GameNumber";
 import GameText from "components/GameText";
 import { getColor } from "components/Option";
-import { optionStyle } from "const/styles";
+import {
+  BarInComparison,
+  BarInSwap,
+  nonActiveBar,
+  optionStyle,
+} from "const/styles";
+import Bar from "PlayGround/Bar";
 import React from "react";
 import { useEffect, useState } from "react";
-import { Flipped, Flipper } from "react-flip-toolkit";
-import { quickSort } from "utils/sorting";
+import { mergeSort, quickSort } from "utils/sorting";
 import { generateRandomNumbers, getRandomNumber } from "utils/utils";
+import CSS from "csstype";
+import { getValue } from "@testing-library/user-event/dist/utils";
+
 export type MoveJournalType = {
-  swapIndexOne: number;
-  swapIndexTwo: number;
+  indexOne: number;
+  indexTwo: number;
+  action: "comparison" | "swap";
   step: number;
   rendered: boolean;
 };
-
+export type GameBarTypes = {
+  value: number;
+  id: string | number;
+  color: string;
+};
 type PlayGroundBodyType = {
   isGameOn: boolean;
   sortingRenderFinished: () => void;
@@ -30,72 +42,68 @@ const PlayGroundBody = ({
   renderNextRound,
   setRenderNextRound,
 }: PlayGroundBodyType) => {
-  const [currentNumbers, setCurrentNumbers] = useState<GameNumberTypes[]>([]);
-  const [isSorted, setIsSorted] = useState<boolean>(false);
+  const [currentBars, setCurrentBars] = useState<GameBarTypes[]>([]);
   const [moveJournal, setMoveJournal] = useState<MoveJournalType[]>([]);
-
-  /* Sort numbers with some delay, store every move in moveJournal */
-  useEffect(() => {
-    const delay = (ms: number) =>
-      new Promise((resolve) => setTimeout(resolve, ms));
-    const sortNumbers = async () => {
-      await delay(1000);
-      if (!isSorted && currentNumbers.length > 0) {
-        const { moveJournal: updatedMoveJournal } = quickSort({
-          array: currentNumbers.map((number) => number.value),
-          low: 0,
-          high: currentNumbers.length - 1,
-          moveJournal: [],
-        });
-        setMoveJournal(updatedMoveJournal);
-        setIsSorted(true);
-      }
-    };
-    if (currentNumbers) sortNumbers();
-  }, [currentNumbers, isSorted]);
-
+  const delay = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms));
   useEffect(() => {
     if (renderNextRound) {
-      setCurrentNumbers(generateRandomNumbers());
-      setIsSorted(false);
+      /* Sort numbers with some delay, store every move in moveJournal */
+      const sortNumbers = async () => {
+        const randomNumbers = generateRandomNumbers();
+        setCurrentBars(randomNumbers);
+        await delay(1000);
+        if (randomNumbers.length > 0) {
+          const { moveJournal: updatedMoveJournal } = quickSort({
+            array: randomNumbers.map((number) => number.value),
+            low: 0,
+            high: randomNumbers.length - 1,
+            moveJournal: [],
+          });
+          setMoveJournal(updatedMoveJournal);
+        }
+      };
+      sortNumbers();
     }
   }, [renderNextRound]);
 
   useEffect(() => {
-    if (moveJournal.length > 0) {
-      if (!moveJournal[0].rendered) renderNextMove();
-      if (moveJournal[moveJournal.length - 1].rendered) sortingRenderFinished();
+    if (moveJournal.length > 0 && !moveJournal[0].rendered) {
+      const renderMoves = async () => {
+        for (let move of moveJournal) {
+          console.log({ move });
+          const gameBars = document.getElementsByClassName(
+            "game-bar"
+          ) as HTMLCollectionOf<HTMLElement>;
+          const color = move.action === "swap" ? BarInSwap : BarInComparison;
+          await delay(150);
+          gameBars[move.indexOne].style.backgroundColor = color;
+          gameBars[move.indexTwo].style.backgroundColor = color;
+          await delay(150);
+          if (move.action === "swap") {
+            const tempHeight = gameBars[move.indexOne].style.height;
+            gameBars[move.indexOne].style.height =
+              gameBars[move.indexTwo].style.height;
+            gameBars[move.indexTwo].style.height = tempHeight;
+          }
+          gameBars[move.indexOne].style.backgroundColor = nonActiveBar;
+          gameBars[move.indexTwo].style.backgroundColor = nonActiveBar;
+          if (move.step > 10) {
+            sortingRenderFinished();
+          }
+        }
+      };
+      renderMoves();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [moveJournal]);
-
-  const renderNextMove = () => {
-    const notRenderedMove = moveJournal.findIndex((move) => !move.rendered);
-    if (notRenderedMove >= 0) {
-      setCurrentNumbers((prevState) => {
-        let numbers = [...prevState];
-        const index1 = moveJournal[notRenderedMove].swapIndexOne;
-        const index2 = moveJournal[notRenderedMove].swapIndexTwo;
-        const temp = numbers[index1];
-        numbers[index1] = numbers[index2];
-        numbers[index2] = temp;
-        return numbers;
-      });
-      setMoveJournal((prevState) =>
-        prevState.map((move, index) => {
-          if (index === notRenderedMove) move.rendered = true;
-          return move;
-        })
-      );
-    }
-  };
 
   return (
     <Row
       align="middle"
       justify="center"
       style={{
-        minHeight: "260px",
+        minHeight: "460px",
         width: "100%",
         backgroundColor: "#47D3EF",
         borderTop: "3px solid #47afff",
@@ -103,23 +111,21 @@ const PlayGroundBody = ({
       }}
     >
       {isGameOn ? (
-        <Col span={23}>
-          <Flipper
-            flipKey={currentNumbers.map((number) => number.value).join("")}
-            onComplete={() => renderNextMove()}
+        <Col span={23} style={{ height: "80%" }}>
+          <Row
+            justify="center"
+            style={{ height: "80%" }}
+            align="bottom"
+            className="game-bars"
           >
-            <Row justify="space-evenly">
-              {currentNumbers?.map((number, index) => (
-                <Flipped key={number.value} flipId={number.value}>
-                  <GameNumber
-                    value={number.value}
-                    key={number.value}
-                    id={number.value}
-                  />
-                </Flipped>
-              ))}
-            </Row>
-          </Flipper>
+            {currentBars?.map((number, index) => (
+              <Bar
+                value={number.value}
+                color={number.color}
+                key={number.value}
+              />
+            ))}
+          </Row>
         </Col>
       ) : (
         <Button

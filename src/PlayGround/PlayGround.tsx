@@ -40,9 +40,6 @@ const PlayGround = () => {
       );
     }
   };
-  useEffect(() => {
-    console.log({ options });
-  }, [options]);
 
   const sortingRenderFinished = () => {
     setOptions((prev) =>
