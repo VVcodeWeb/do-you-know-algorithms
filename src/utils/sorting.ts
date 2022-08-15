@@ -89,13 +89,13 @@ const merge = (
   let j = 0;
   let k = left;
   while (i < subArr1Length && j < subArr2Length) {
-    addComparisonMove(i + left, j + middle, moveJournal);
+    //addComparisonMove(i + left, j + middle, moveJournal);
     if (arr1[i] <= arr2[j]) {
-      addSwapMove(k, i + left, moveJournal);
+      // addSwapMove(k, i + left, moveJournal);
       array[k] = arr1[i];
       i++;
     } else {
-      addSwapMove(k, j + middle, moveJournal);
+      //addSwapMove(k, j + middle, moveJournal);
       array[k] = arr2[j];
       j++;
     }

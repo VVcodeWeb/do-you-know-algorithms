@@ -31,7 +31,6 @@ const HeaderSquare = ({
   );
 };
 type PlayGroundHeaderType = {
-  startGame: () => void;
   score: number;
   isGameOn: boolean;
   timerKey: React.Key;
@@ -39,7 +38,6 @@ type PlayGroundHeaderType = {
   isTimerTicking: boolean;
 };
 const PlayGroundHeader = ({
-  startGame,
   score,
   isGameOn,
   timerKey,

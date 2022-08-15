@@ -1,10 +1,11 @@
 import PlayGroundBody from "PlayGround/PlayGroundBody";
 import PlayGroundHeader from "PlayGround/PlayGroundHeader";
 import { colFlex } from "const/styles";
-import React, { useEffect, useState } from "react";
+import React, { useReducer, useState } from "react";
 import PlayGroundOptions from "PlayGround/PlayGroundOptions";
 import { getScore, shuffle } from "utils/utils";
 import {
+  MERGE_SORT,
   QUICK_SORT,
   SORTING_POOL,
   TIMER_KEY_ONE,
@@ -15,14 +16,33 @@ export type OptionsType = {
   correct: boolean;
   visible: boolean;
 };
+
+const reducer = (state: any, action: any) => {
+  switch (action.type) {
+    case "increment":
+      return { score: state.count + 1 };
+    case "decrement":
+      return { score: state.count - 1 };
+    default:
+      throw new Error();
+  }
+};
+const intialState = {
+  score: 0,
+  timerKey: TIMER_KEY_ONE,
+  isTimerTicking: false,
+  isGameOn: false,
+  options: [],
+};
 const PlayGround = () => {
+  const [renderNextRound, setRenderNextRound] = useState<boolean>(false);
+
+  const [options, setOptions] = useState<Array<OptionsType>>([]);
   const [isGameOn, setIsGameOn] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
-  const [renderNextRound, setRenderNextRound] = useState<boolean>(false);
   const [isTimerTicking, setIsTimerTicking] = useState<boolean>(false);
   const [timerKey, setTimerKey] = useState<React.Key>(TIMER_KEY_ONE);
-  const [options, setOptions] = useState<Array<OptionsType>>([]);
-
+  const [state, dispatch] = useReducer(reducer, intialState);
   const startGame = () => {
     if (!isGameOn) {
       setIsGameOn(true);
@@ -34,7 +54,7 @@ const PlayGround = () => {
         shuffle(
           SORTING_POOL.map((sort) => ({
             sorting: sort,
-            correct: sort === QUICK_SORT ? true : false,
+            correct: sort === MERGE_SORT ? true : false,
           }))
         )
       );
@@ -60,14 +80,6 @@ const PlayGround = () => {
         prevKey === TIMER_KEY_ONE ? TIMER_KEY_TWO : TIMER_KEY_ONE
       );
       setRenderNextRound(true);
-      setOptions((prev) =>
-        shuffle(
-          prev.map((option) => ({
-            ...option,
-            visible: false,
-          }))
-        )
-      );
       setScore((prevScore) => prevScore + getScore());
     } else {
       gameHasFinished();
@@ -99,7 +111,6 @@ const PlayGround = () => {
       }}
     >
       <PlayGroundHeader
-        startGame={startGame}
         score={score}
         timerKey={timerKey}
         isTimerTicking={isTimerTicking}

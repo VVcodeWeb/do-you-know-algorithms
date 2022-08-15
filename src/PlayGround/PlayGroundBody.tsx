@@ -10,10 +10,8 @@ import {
 import Bar from "PlayGround/Bar";
 import React from "react";
 import { useEffect, useState } from "react";
-import { mergeSort, quickSort } from "utils/sorting";
+import { quickSort } from "utils/sorting";
 import { generateRandomNumbers, getRandomNumber } from "utils/utils";
-import CSS from "csstype";
-import { getValue } from "@testing-library/user-event/dist/utils";
 
 export type MoveJournalType = {
   indexOne: number;
