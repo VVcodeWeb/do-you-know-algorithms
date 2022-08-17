@@ -1,6 +1,6 @@
-import { MAX_NUMBERS } from "const/constants";
+import { COMPARISON, MAX_NUMBERS, SWAP } from "const/constants";
 import { nonActiveBar } from "const/styles";
-import { GameBarTypes, MoveJournalType } from "PlayGround/PlayGroundBody";
+import { GameBarTypes, MoveJournalType } from "PlayGround/types";
 
 export const generateRandomNumbers = (): GameBarTypes[] => {
   let arr = [];
@@ -42,7 +42,7 @@ export const addComparisonMove = (
     step: moveJournal.length,
     indexOne: index1,
     indexTwo: index2,
-    action: "comparison",
+    action: COMPARISON,
   });
 };
 
@@ -56,7 +56,7 @@ export const addSwapMove = (
     step: moveJournal.length,
     indexOne: index1,
     indexTwo: index2,
-    action: "swap",
+    action: SWAP,
   });
 };
 export const swapAndSaveJournal = (

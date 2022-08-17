@@ -1,31 +1,21 @@
-import { ACTION, SORTING_POOL, QUICK_SORT } from "const/constants";
-import { OptionsType } from "PlayGround";
-import React, { useReducer } from "react";
-import { delay, getScore, shuffle } from "utils/utils";
+import {
+  ACTION,
+  SORTING_POOL,
+  QUICK_SORT,
+  SHOULD_RENDER_STOP,
+} from "const/constants";
+import { State, Action, RenderStatesType, OptionsType } from "PlayGround/types";
+import React, { useReducer, useState } from "react";
+import { getScore, shuffle } from "utils/utils";
 
 const intialState = {
   score: 0,
-  timerKey: 1,
+  timerKey: 0,
   isTimerTicking: false,
   isGameOn: false,
   options: [] as Array<OptionsType>,
-  isSortingRendering: false,
-};
-type Action =
-  | { type: typeof ACTION.START_GAME }
-  | { type: typeof ACTION.STOP_RENDERING }
-  | { type: typeof ACTION.DISPLAY_ANSWERS }
-  | { type: typeof ACTION.STOP_GAME }
-  | { type: typeof ACTION.MANAGE_RENDERING; payload: { isRendering: boolean } }
-  | { type: typeof ACTION.NEW_ROUND; payload?: { scoreGained: number } };
-
-type State = {
-  isGameOn: boolean;
-  score: number;
-  timerKey: number;
-  isTimerTicking: boolean;
-  options: Array<OptionsType>;
-  isSortingRendering: boolean;
+  isRendering: false,
+  shouldRenderStop: false,
 };
 
 const reducer = (state: State, action: Action): State | never => {
@@ -37,7 +27,6 @@ const reducer = (state: State, action: Action): State | never => {
         isGameOn: true,
         timerKey: state.timerKey + 1,
         isTimerTicking: false,
-        isSortingRendering: false,
         options: shuffle(
           SORTING_POOL.map((sort) => ({
             sorting: sort,
@@ -55,23 +44,13 @@ const reducer = (state: State, action: Action): State | never => {
           visible: true,
         })),
       };
-
+    case ACTION.UPDATE_RENDERING_STATES:
+      return {
+        ...state,
+        [action.payload.stateName]: action.payload.value,
+      };
     case ACTION.STOP_GAME:
       return intialState;
-    case ACTION.MANAGE_RENDERING:
-      return {
-        ...state,
-        isSortingRendering: action.payload.isRendering,
-      };
-
-    //deprecated
-    case ACTION.START_GAME:
-      return {
-        ...state,
-        score: 0,
-        isGameOn: true,
-      };
-
     default:
       throw new Error();
   }
@@ -83,25 +62,45 @@ export const GameContext = React.createContext({
   handleAnswer: (userGuess: string) => {},
   showAnswers: () => {},
   stopGame: () => {},
-  nextRound: () => {},
-  manageRendering: ({ isRendering }: { isRendering: boolean }) => {},
+  updateRenderingStates: ({
+    value,
+    stateName,
+  }: {
+    value: boolean;
+    stateName: RenderStatesType;
+  }) => {},
+  renderStopped: () => {},
 });
 
 const GameProvider = ({ children }: any) => {
   const [state, dispatch] = useReducer(reducer, intialState);
-
-  const nextRound = () => dispatch({ type: ACTION.NEW_ROUND });
+  const [storedUserGuess, setStoredUserGuess] = useState("");
+  const startGame = () => dispatch({ type: ACTION.NEW_ROUND });
   const showAnswers = () => dispatch({ type: ACTION.DISPLAY_ANSWERS });
   const stopGame = () => dispatch({ type: ACTION.STOP_GAME });
-  const manageRendering = ({ isRendering }: { isRendering: boolean }) =>
-    dispatch({ type: ACTION.MANAGE_RENDERING, payload: { isRendering } });
+  const renderStopped = () => handleAnswer(storedUserGuess);
+
+  const updateRenderingStates = ({
+    value,
+    stateName,
+  }: {
+    value: boolean;
+    stateName: RenderStatesType;
+  }) =>
+    dispatch({
+      type: ACTION.UPDATE_RENDERING_STATES,
+      payload: { value, stateName },
+    });
 
   const handleAnswer = async (userGuess: string) => {
-    if (state.isSortingRendering) {
-      console.log("sorting is rendering at handleAnswer");
-      await delay(1000);
+    if (state.isRendering) {
+      setStoredUserGuess(userGuess);
+      updateRenderingStates({ stateName: SHOULD_RENDER_STOP, value: true });
+      return;
+    } else {
+      setStoredUserGuess("");
+      updateRenderingStates({ stateName: SHOULD_RENDER_STOP, value: false });
     }
-    console.log({ handleAnswerSortingState: state.isSortingRendering });
     const correctAnswer = state.options.find(
       (option) => option.correct
     )?.sorting;
@@ -113,8 +112,6 @@ const GameProvider = ({ children }: any) => {
       });
     else dispatch({ type: ACTION.STOP_GAME });
   };
-  //deprecated
-  const startGame = () => dispatch({ type: ACTION.NEW_ROUND });
   return (
     <GameContext.Provider
       value={{
@@ -123,8 +120,8 @@ const GameProvider = ({ children }: any) => {
         handleAnswer,
         showAnswers,
         stopGame,
-        nextRound,
-        manageRendering,
+        updateRenderingStates,
+        renderStopped,
       }}
     >
       {children}

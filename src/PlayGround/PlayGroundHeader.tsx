@@ -1,6 +1,6 @@
 import { Card, Col, Row } from "antd";
 import GameText from "components/GameText";
-import { ReactNode, useContext, useEffect } from "react";
+import { ReactNode, useContext } from "react";
 import Timer from "components/Timer";
 import { GameContext } from "PlayGround/GameContext";
 
@@ -31,13 +31,7 @@ const HeaderSquare = ({
     </Col>
   );
 };
-type PlayGroundHeaderType = {
-  score: number;
-  isGameOn: boolean;
-  timerKey: React.Key;
-  handleTimeOut: () => void;
-  isTimerTicking: boolean;
-};
+
 const PlayGroundHeader = () => {
   const { score, timerKey, isTimerTicking, stopGame } = useContext(GameContext);
   return (

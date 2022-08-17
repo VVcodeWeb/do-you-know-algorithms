@@ -1,12 +1,7 @@
 import { Row } from "antd";
-import React, { useContext } from "react";
+import { useContext } from "react";
 import Option from "components/Option";
 import { GameContext } from "PlayGround/GameContext";
-import { OptionsType } from "PlayGround";
-type PlayGroundOptionsType = {
-  handleAnswer: (userGuess: string) => void;
-  options: Array<OptionsType>;
-};
 
 const PlayGroundOptions = () => {
   const { options, handleAnswer } = useContext(GameContext);

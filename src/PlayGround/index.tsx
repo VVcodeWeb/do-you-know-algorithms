@@ -4,12 +4,6 @@ import { colFlex } from "const/styles";
 import PlayGroundOptions from "PlayGround/PlayGroundOptions";
 import GameProvider from "PlayGround/GameContext";
 
-export type OptionsType = {
-  sorting: string;
-  correct: boolean;
-  visible: boolean;
-};
-
 const PlayGround = () => {
   return (
     <GameProvider>

@@ -1,6 +1,7 @@
 import { Button, Col, Row } from "antd";
 import GameText from "components/GameText";
 import { getColor } from "components/Option";
+import { IS_RENDERING, SWAP } from "const/constants";
 import {
   BarInComparison,
   BarInSwap,
@@ -9,41 +10,23 @@ import {
 } from "const/styles";
 import Bar from "PlayGround/Bar";
 import { GameContext } from "PlayGround/GameContext";
-import React, { useContext } from "react";
+import { GameBarTypes, MoveJournalType } from "PlayGround/types";
+import { useContext } from "react";
 import { useEffect, useState } from "react";
 import { quickSort } from "utils/sorting";
 import { delay, generateRandomNumbers, getRandomNumber } from "utils/utils";
 
-export type MoveJournalType = {
-  indexOne: number;
-  indexTwo: number;
-  action: "comparison" | "swap";
-  step: number;
-  rendered: boolean;
-};
-export type GameBarTypes = {
-  value: number;
-  id: string | number;
-  color: string;
-};
-type PlayGroundBodyType = {
-  isGameOn: boolean;
-  sortingRenderFinished: () => void;
-  startGame: () => void;
-  renderNextRound: boolean;
-  setRenderNextRound: React.Dispatch<React.SetStateAction<boolean>>;
-  sortToUse: string | undefined;
-};
 const PlayGroundBody = () => {
   const [currentBars, setCurrentBars] = useState<GameBarTypes[]>([]);
   const [moveJournal, setMoveJournal] = useState<MoveJournalType[]>([]);
   const {
     isGameOn,
     showAnswers,
-    startGame,
     options,
-    isSortingRendering,
-    manageRendering,
+    startGame,
+    updateRenderingStates,
+    shouldRenderStop,
+    renderStopped,
   } = useContext(GameContext);
 
   useEffect(() => {
@@ -58,41 +41,43 @@ const PlayGroundBody = () => {
         high: randomBars.length - 1,
         moveJournal: [],
       });
-      //console.log({ arr });
       setCurrentBars(randomBars);
       setMoveJournal(updatedMoveJournal);
     }
   }, [options, isGameOn]);
 
-  const renderNextMove = async (move: MoveJournalType) => {
-    manageRendering({ isRendering: true });
-    //console.log({ move });
-    const gameBars = document.getElementsByClassName(
-      "game-bar"
-    ) as HTMLCollectionOf<HTMLElement>;
-    const color = move.action === "swap" ? BarInSwap : BarInComparison;
-    await delay(150);
-    gameBars[move.indexOne].style.backgroundColor = color;
-    gameBars[move.indexTwo].style.backgroundColor = color;
-    await delay(150);
-    if (move.action === "swap") {
-      const tempHeight = gameBars[move.indexOne].style.height;
-      gameBars[move.indexOne].style.height =
-        gameBars[move.indexTwo].style.height;
-      gameBars[move.indexTwo].style.height = tempHeight;
-    }
-    gameBars[move.indexOne].style.backgroundColor = nonActiveBar;
-    gameBars[move.indexTwo].style.backgroundColor = nonActiveBar;
-    console.log({ isSortingRenderingAfter: isSortingRendering });
-    if (move.step === 10) showAnswers();
-    if (!isSortingRendering && move.step + 1 < moveJournal.length)
-      renderNextMove(moveJournal[move.step + 1]);
-  };
-
   useEffect(() => {
-    if (moveJournal.length > 0 && !moveJournal[0].rendered) {
-      renderNextMove(moveJournal[0]);
-    }
+    (async function renderNextMove() {
+      const nextMove = moveJournal.find((x) => !x.rendered);
+      if (nextMove && !shouldRenderStop) {
+        updateRenderingStates({ stateName: IS_RENDERING, value: true });
+        const gameBars = document.getElementsByClassName(
+          "game-bar"
+        ) as HTMLCollectionOf<HTMLElement>;
+        const color = nextMove.action === SWAP ? BarInSwap : BarInComparison;
+        await delay(150);
+        gameBars[nextMove.indexOne].style.backgroundColor = color;
+        gameBars[nextMove.indexTwo].style.backgroundColor = color;
+        await delay(150);
+        if (nextMove.action === SWAP) {
+          const tempHeight = gameBars[nextMove.indexOne].style.height;
+          gameBars[nextMove.indexOne].style.height =
+            gameBars[nextMove.indexTwo].style.height;
+          gameBars[nextMove.indexTwo].style.height = tempHeight;
+        }
+        gameBars[nextMove.indexOne].style.backgroundColor = nonActiveBar;
+        gameBars[nextMove.indexTwo].style.backgroundColor = nonActiveBar;
+        updateRenderingStates({ stateName: IS_RENDERING, value: false });
+        if (nextMove.step === 0) showAnswers();
+        setMoveJournal((prevState) =>
+          prevState.map((move) => {
+            if (move.step === nextMove.step) move.rendered = true;
+            return move;
+          })
+        );
+      }
+      if (shouldRenderStop) renderStopped();
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [moveJournal]);
 

@@ -1,9 +1,5 @@
-import { MoveJournalType } from "PlayGround/PlayGroundBody";
-import {
-  addComparisonMove,
-  addSwapMove,
-  swapAndSaveJournal,
-} from "utils/utils";
+import { MoveJournalType } from "PlayGround/types";
+import { addComparisonMove, swapAndSaveJournal } from "utils/utils";
 type SortReturnType = {
   array: Array<any>;
   moveJournal: Array<MoveJournalType>;
