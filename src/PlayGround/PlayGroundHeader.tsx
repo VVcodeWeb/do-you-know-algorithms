@@ -1,7 +1,8 @@
 import { Card, Col, Row } from "antd";
 import GameText from "components/GameText";
-import { ReactNode } from "react";
+import { ReactNode, useContext, useEffect } from "react";
 import Timer from "components/Timer";
+import { GameContext } from "PlayGround/GameContext";
 
 const HeaderSquare = ({
   children,
@@ -37,13 +38,8 @@ type PlayGroundHeaderType = {
   handleTimeOut: () => void;
   isTimerTicking: boolean;
 };
-const PlayGroundHeader = ({
-  score,
-  isGameOn,
-  timerKey,
-  handleTimeOut,
-  isTimerTicking,
-}: PlayGroundHeaderType) => {
+const PlayGroundHeader = () => {
+  const { score, timerKey, isTimerTicking, stopGame } = useContext(GameContext);
   return (
     <Row justify={"center"} gutter={3} style={{ width: "100%" }}>
       <HeaderSquare
@@ -57,9 +53,8 @@ const PlayGroundHeader = ({
         icon={<div style={{ fontSize: 20 }}>{""}⌛</div>}
       >
         <Timer
-          isGameOn={isGameOn}
           timerKey={timerKey}
-          handleTimeOut={handleTimeOut}
+          handleTimeOut={stopGame}
           isTimerTicking={isTimerTicking}
         />
       </HeaderSquare>

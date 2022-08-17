@@ -1,16 +1,15 @@
 import { Row } from "antd";
-import React from "react";
+import React, { useContext } from "react";
 import Option from "components/Option";
-import { OptionsType } from "PlayGround/PlayGround";
+import { GameContext } from "PlayGround/GameContext";
+import { OptionsType } from "PlayGround";
 type PlayGroundOptionsType = {
   handleAnswer: (userGuess: string) => void;
   options: Array<OptionsType>;
 };
 
-const PlayGroundOptions = ({
-  handleAnswer,
-  options,
-}: PlayGroundOptionsType) => {
+const PlayGroundOptions = () => {
+  const { options, handleAnswer } = useContext(GameContext);
   return (
     <Row
       gutter={[30, 20]}
@@ -23,6 +22,7 @@ const PlayGroundOptions = ({
       {options.map((option, index) => {
         return (
           <Option
+            key={option.sorting}
             text={option.sorting}
             isOptionVisible={option.visible}
             handleAnswer={handleAnswer}

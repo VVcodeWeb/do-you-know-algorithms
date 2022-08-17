@@ -15,6 +15,8 @@ export const generateRandomNumbers = (): GameBarTypes[] => {
     color: nonActiveBar,
   }));
 };
+export const delay = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
 export const getRandomNumber = (max: number, min: number) =>
   Math.floor(Math.random() * (max - min)) + min;
 

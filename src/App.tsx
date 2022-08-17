@@ -1,7 +1,14 @@
-import RenderAlgorithmsGame from "RenderAlgorithmsGame";
+import { Header, Footer } from "antd/lib/layout/layout";
 import "App.css";
+import PlayGround from "PlayGround";
 function App() {
-  return <RenderAlgorithmsGame />;
+  return (
+    <>
+      <Header />
+      <PlayGround />
+      <Footer />
+    </>
+  );
 }
 
 export default App;

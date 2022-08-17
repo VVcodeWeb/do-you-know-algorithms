@@ -2,13 +2,7 @@ import { Col, Button } from "antd";
 import GameText from "components/GameText";
 import { optionStyle } from "const/styles";
 import CSS from "csstype";
-import React from "react";
-type OptionType = {
-  isOptionVisible: boolean;
-  text: string;
-  handleAnswer: (userGuess: string) => void;
-  index: number;
-};
+
 export const getColor = (index: number): CSS.Properties => {
   switch (index) {
     case 0:
@@ -32,6 +26,12 @@ export const getColor = (index: number): CSS.Properties => {
         boxShadow: "rgb(175, 132, 82) 5px 3px 0px 3px",
       };
   }
+};
+type OptionType = {
+  isOptionVisible: boolean;
+  text: string;
+  handleAnswer: (userGuess: string) => void;
+  index: number;
 };
 const Option = ({ isOptionVisible, text, handleAnswer, index }: OptionType) => {
   return (
