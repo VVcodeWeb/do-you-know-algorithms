@@ -49,7 +49,7 @@ const reducer = (state: State, action: Action): State | never => {
         ...state,
         [action.payload.stateName]: action.payload.value,
       };
-    case ACTION.STOP_GAME:
+    case ACTION.END_GAME:
       return intialState;
     default:
       throw new Error();
@@ -77,7 +77,7 @@ const GameProvider = ({ children }: any) => {
   const [storedUserGuess, setStoredUserGuess] = useState("");
   const startGame = () => dispatch({ type: ACTION.NEW_ROUND });
   const showAnswers = () => dispatch({ type: ACTION.DISPLAY_ANSWERS });
-  const stopGame = () => dispatch({ type: ACTION.STOP_GAME });
+  const stopGame = () => dispatch({ type: ACTION.END_GAME });
   const renderStopped = () => handleAnswer(storedUserGuess);
 
   const updateRenderingStates = ({
@@ -110,7 +110,7 @@ const GameProvider = ({ children }: any) => {
         type: ACTION.NEW_ROUND,
         payload: { scoreGained: getScore() },
       });
-    else dispatch({ type: ACTION.STOP_GAME });
+    else dispatch({ type: ACTION.END_GAME });
   };
   return (
     <GameContext.Provider

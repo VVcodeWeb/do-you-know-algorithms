@@ -7,9 +7,8 @@ import {
 } from "const/constants";
 
 export type Action =
-  | { type: typeof ACTION.STOP_RENDERING }
   | { type: typeof ACTION.DISPLAY_ANSWERS }
-  | { type: typeof ACTION.STOP_GAME }
+  | { type: typeof ACTION.END_GAME }
   | {
       type: typeof ACTION.UPDATE_RENDERING_STATES;
       payload: {

@@ -1,3 +1,4 @@
+import { GAME_BAR } from "const/constants";
 import { CSSProperties } from "react";
 
 const Bar = ({ value, color }: { value: number; color: string }) => {
@@ -9,10 +10,7 @@ const Bar = ({ value, color }: { value: number; color: string }) => {
     marginRight: 1,
   };
   return (
-    <div
-      className={"game-bar"}
-      style={{ ...styles, backgroundColor: color }}
-    ></div>
+    <div className={GAME_BAR} style={{ ...styles, backgroundColor: color }} />
   );
 };
 

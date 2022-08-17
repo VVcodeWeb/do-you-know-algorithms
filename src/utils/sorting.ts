@@ -11,6 +11,7 @@ type QuickSortType = {
   high: number;
   moveJournal: Array<MoveJournalType>;
 };
+/* TODO: add a test */
 export const quickSort = ({
   array,
   low,
@@ -46,6 +47,7 @@ type MergeSortType = {
   right: number;
   moveJournal: Array<MoveJournalType>;
 };
+/* TODO: fix */
 export const mergeSort = ({
   array,
   left,

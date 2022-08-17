@@ -1,14 +1,14 @@
 import { Button, Col, Row } from "antd";
 import GameText from "components/GameText";
 import { getColor } from "components/Option";
-import { IS_RENDERING, SWAP } from "const/constants";
+import { GAME_BAR, IS_RENDERING, SWAP } from "const/constants";
 import {
   BarInComparison,
   BarInSwap,
   nonActiveBar,
   optionStyle,
 } from "const/styles";
-import Bar from "PlayGround/Bar";
+import Bar from "components/Bar";
 import { GameContext } from "PlayGround/GameContext";
 import { GameBarTypes, MoveJournalType } from "PlayGround/types";
 import { useContext } from "react";
@@ -52,7 +52,7 @@ const PlayGroundBody = () => {
       if (nextMove && !shouldRenderStop) {
         updateRenderingStates({ stateName: IS_RENDERING, value: true });
         const gameBars = document.getElementsByClassName(
-          "game-bar"
+          GAME_BAR
         ) as HTMLCollectionOf<HTMLElement>;
         const color = nextMove.action === SWAP ? BarInSwap : BarInComparison;
         await delay(150);
@@ -95,12 +95,7 @@ const PlayGroundBody = () => {
     >
       {isGameOn ? (
         <Col span={23} style={{ height: "80%" }}>
-          <Row
-            justify="center"
-            style={{ height: "80%" }}
-            align="bottom"
-            className="game-bars"
-          >
+          <Row justify="center" style={{ height: "80%" }} align="bottom">
             {currentBars?.map((number, index) => (
               <Bar
                 value={number.value}
