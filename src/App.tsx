@@ -1,5 +1,6 @@
-import { Header, Footer } from "antd/lib/layout/layout";
 import "App.css";
+import Footer from "components/Footer";
+import Header from "components/Header";
 import PlayGround from "PlayGround";
 function App() {
   return (

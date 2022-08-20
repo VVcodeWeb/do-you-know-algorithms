@@ -1,36 +1,58 @@
 import {
   ACTION,
   SORTING_POOL,
-  QUICK_SORT,
   SHOULD_RENDER_STOP,
+  HEAP_SORT,
+  QUICK_SORT,
+  BUBBLE_SORT,
+  MERGE_SORT,
+  EASY,
 } from "const/constants";
-import { State, Action, RenderStatesType, OptionsType } from "PlayGround/types";
+import {
+  State,
+  Action,
+  RenderStatesType,
+  OptionsType,
+  DifficultyType,
+} from "PlayGround/types";
 import React, { useReducer, useState } from "react";
-import { getScore, shuffle } from "utils/utils";
+import { getScore, randomNumber, shuffle } from "utils/utils";
 
 const intialState = {
-  score: 0,
+  score: {
+    currentScore: 0,
+    lastGainedScore: 0,
+    streak: 0,
+  },
   timerKey: 0,
   isTimerTicking: false,
   isGameOn: false,
   options: [] as Array<OptionsType>,
   isRendering: false,
   shouldRenderStop: false,
+  difficulty: EASY as DifficultyType,
 };
 
 const reducer = (state: State, action: Action): State | never => {
   switch (action.type) {
     case ACTION.NEW_ROUND:
+      const correctAnswer =
+        SORTING_POOL[randomNumber(0, SORTING_POOL.length - 1)];
+      const scoreGained = action?.payload?.scoreGained ?? 0;
       return {
         ...state,
-        score: action.payload ? state.score + getScore() : state.score,
+        score: {
+          currentScore: state.score.currentScore + scoreGained,
+          lastGainedScore: scoreGained,
+          streak: scoreGained > 0 ? state.score.streak + 1 : state.score.streak,
+        },
         isGameOn: true,
         timerKey: state.timerKey + 1,
         isTimerTicking: false,
         options: shuffle(
           SORTING_POOL.map((sort) => ({
             sorting: sort,
-            correct: sort === QUICK_SORT ? true : false,
+            correct: sort === correctAnswer,
             visible: false,
           }))
         ),
@@ -49,8 +71,28 @@ const reducer = (state: State, action: Action): State | never => {
         ...state,
         [action.payload.stateName]: action.payload.value,
       };
+    case ACTION.RESET_GAME_PARAMS:
+      return {
+        ...intialState,
+        score: {
+          currentScore: 0,
+          lastGainedScore: -1 * state.score.currentScore,
+          streak: 0,
+        },
+        difficulty: state.difficulty,
+      };
     case ACTION.END_GAME:
-      return intialState;
+      return {
+        ...state,
+        options: intialState.options,
+        isGameOn: false,
+        isTimerTicking: false,
+      };
+    case ACTION.SET_DIFFICULTY:
+      return {
+        ...state,
+        difficulty: action.payload.difficulty,
+      };
     default:
       throw new Error();
   }
@@ -70,6 +112,8 @@ export const GameContext = React.createContext({
     stateName: RenderStatesType;
   }) => {},
   renderStopped: () => {},
+  chooseDifficulty: (difficulty: DifficultyType) => {},
+  restartGame: () => {},
 });
 
 const GameProvider = ({ children }: any) => {
@@ -79,7 +123,12 @@ const GameProvider = ({ children }: any) => {
   const showAnswers = () => dispatch({ type: ACTION.DISPLAY_ANSWERS });
   const stopGame = () => dispatch({ type: ACTION.END_GAME });
   const renderStopped = () => handleAnswer(storedUserGuess);
-
+  const restartGame = () => {
+    dispatch({ type: ACTION.RESET_GAME_PARAMS });
+    dispatch({ type: ACTION.NEW_ROUND });
+  };
+  const chooseDifficulty = (difficulty: DifficultyType) =>
+    dispatch({ type: ACTION.SET_DIFFICULTY, payload: { difficulty } });
   const updateRenderingStates = ({
     value,
     stateName,
@@ -122,6 +171,8 @@ const GameProvider = ({ children }: any) => {
         stopGame,
         updateRenderingStates,
         renderStopped,
+        chooseDifficulty,
+        restartGame,
       }}
     >
       {children}

@@ -2,12 +2,17 @@ import { COMPARISON, MAX_NUMBERS, SWAP } from "const/constants";
 import { nonActiveBar } from "const/styles";
 import { GameBarTypes, MoveJournalType } from "PlayGround/types";
 
+export const randomNumber = (min: number, max: number) =>
+  Math.floor(Math.random() * (max - min + 1) + min);
+
 export const generateRandomNumbers = (): GameBarTypes[] => {
   let arr = [];
   while (arr.length < MAX_NUMBERS) {
-    let r = Math.floor(Math.random() * 100) + 1;
+    let r = randomNumber(10, 450);
     if (arr.indexOf(r) === -1) arr.push(r);
   }
+  if (JSON.stringify(arr) === JSON.stringify(arr.slice().sort((a, b) => a - b)))
+    return generateRandomNumbers();
   return arr.map((value, index) => ({
     value,
     key: index,
@@ -35,13 +40,15 @@ export const shuffle = (array: any) => {
 export const addComparisonMove = (
   index1: number,
   index2: number,
-  moveJournal: Array<MoveJournalType>
+  moveJournal: Array<MoveJournalType>,
+  index3?: number
 ) => {
   moveJournal.push({
     rendered: false,
     step: moveJournal.length,
     indexOne: index1,
     indexTwo: index2,
+    indexThree: index3,
     action: COMPARISON,
   });
 };
