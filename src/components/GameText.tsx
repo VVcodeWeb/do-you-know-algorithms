@@ -6,19 +6,12 @@ type GameTextTypes = {
   children: ReactNode;
   styles?: CSSProperties;
 };
-const GameText = ({
-  children,
-  level,
-  type = "title",
-  styles,
-}: GameTextTypes) => {
-  if (type === "title")
-    return (
-      <Typography.Title style={{ ...styles, marginBottom: 0 }} level={level}>
-        {children}
-      </Typography.Title>
-    );
-  return <Typography style={styles}>{children}</Typography>;
+const GameText = ({ children, styles }: GameTextTypes) => {
+  return (
+    <span style={{ fontFamily: "Machine Gunk", color: "#fff", ...styles }}>
+      {children}
+    </span>
+  );
 };
 
 export default GameText;

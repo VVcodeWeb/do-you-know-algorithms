@@ -1,25 +1,25 @@
+import { Grid } from "@mui/material";
 import PlayGroundBody from "PlayGround/PlayGroundBody";
 import PlayGroundHeader from "PlayGround/PlayGroundHeader";
-import { colFlex } from "const/styles";
 import PlayGroundOptions from "PlayGround/PlayGroundOptions";
-import GameProvider from "PlayGround/GameContext";
+import styles from "PlayGround/styles.module.css";
 
 const PlayGround = () => {
   return (
-    <GameProvider>
-      <div
-        style={{
-          ...colFlex,
-          width: "100%",
-          paddingTop: 10,
-          backgroundColor: "#fef5ff",
-        }}
-      >
+    <Grid
+      container
+      spacing={2}
+      direction="column"
+      justifyContent="flex-begin"
+      className={styles["play-ground"]}
+    >
+      <Grid item xs={12} /* style={{ width: "100%" }} */>
         <PlayGroundHeader />
+      </Grid>
+      <Grid item xs={12}>
         <PlayGroundBody />
-        <PlayGroundOptions />
-      </div>
-    </GameProvider>
+      </Grid>
+    </Grid>
   );
 };
 

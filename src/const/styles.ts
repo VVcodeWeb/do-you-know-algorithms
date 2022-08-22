@@ -15,9 +15,3 @@ export const numbersStyle: CSS.Properties = {
 export const nonActiveBar: string = "white";
 export const BarInComparison: string = "yellow";
 export const BarInSwap: string = "green";
-export const optionStyle: CSS.Properties = {
-  border: 0,
-  padding: "5px, 15px",
-  minWidth: "50%",
-  minHeight: "60px",
-};

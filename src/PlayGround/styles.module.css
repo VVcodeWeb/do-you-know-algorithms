@@ -1,0 +1,12 @@
+.play-ground {
+  flex-grow: 2;
+  box-sizing: border-box;
+}
+
+.play-ground__body {
+  width: 100%;
+  box-sizing: border-box;
+}
+.restart_game {
+  background: linear-gradient(to bottom, #3d3e9a, 90%, #ce3226);
+}

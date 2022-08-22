@@ -1,5 +1,9 @@
 import { MoveJournalType } from "PlayGround/types";
-import { addComparisonMove, swapAndSaveJournal } from "utils/utils";
+import {
+  addComparisonMove,
+  addSwapMove,
+  swapAndSaveJournal,
+} from "utils/utils";
 type SortReturnType = {
   array: Array<any>;
   moveJournal: Array<MoveJournalType>;
@@ -11,7 +15,6 @@ type QuickSortType = {
   high: number;
   moveJournal: Array<MoveJournalType>;
 };
-/* TODO: add a test */
 export const quickSort = ({
   array,
   low,
@@ -55,7 +58,7 @@ export const mergeSort = ({
   moveJournal,
 }: MergeSortType): SortReturnType => {
   if (left < right) {
-    const middle = Math.round((right - 1) / 2);
+    let middle = left + Math.floor((right - left) / 2);
     mergeSort({ array, left, right: middle, moveJournal });
     mergeSort({ array, left: middle + 1, right, moveJournal });
     merge(array, left, middle, right, moveJournal);
@@ -64,50 +67,126 @@ export const mergeSort = ({
   return { array, moveJournal };
 };
 
-const merge = (
-  array: any,
-  left: any,
-  middle: any,
-  right: any,
-  moveJournal: any
-) => {
-  const subArr1Length = middle - left + 1;
-  const subArr2Length = right - middle;
-  const arr1 = new Array(subArr1Length);
-  const arr2 = new Array(subArr2Length);
+const merge = (arr: any, l: any, m: any, r: any, moveJournal?: any) => {
+  let lengthOne = m - l + 1;
+  let lengthTwo = r - m;
 
-  for (let i = 0; i < subArr1Length; i++) {
-    arr1.push(array[left + i]);
-  }
-  for (let i = 0; i < subArr2Length; i++) {
-    arr2.push(array[middle + 1 + i]);
-  }
+  // Create temp arrays
+  let L = new Array(lengthOne);
+  let R = new Array(lengthTwo);
 
+  // Copy data to temp arrays L[] and R[]
+  for (let i = 0; i < lengthOne; i++) L[i] = arr[l + i];
+  for (let j = 0; j < lengthTwo; j++) R[j] = arr[m + 1 + j];
+
+  // Merge the temp arrays back into arr[l..r]
+
+  // Initial index of first subarray
   let i = 0;
+
+  // Initial index of second subarray
   let j = 0;
-  let k = left;
-  while (i < subArr1Length && j < subArr2Length) {
-    //addComparisonMove(i + left, j + middle, moveJournal);
-    if (arr1[i] <= arr2[j]) {
-      // addSwapMove(k, i + left, moveJournal);
-      array[k] = arr1[i];
+
+  // Initial index of merged subarray
+  let k = l;
+
+  while (i < lengthOne && j < lengthTwo) {
+    addComparisonMove(l + i, m + 1 + j, moveJournal);
+    if (L[i] <= R[j]) {
+      addSwapMove(k, l + i, moveJournal);
+      arr[k] = L[i];
       i++;
     } else {
-      //addSwapMove(k, j + middle, moveJournal);
-      array[k] = arr2[j];
+      addSwapMove(k, m + 1 + j, moveJournal);
+      arr[k] = R[j];
       j++;
     }
     k++;
   }
 
-  while (i < subArr1Length) {
-    array[k] = arr1[i];
+  // Copy the remaining elements of
+  // L[], if there are any
+  while (i < lengthOne) {
+    arr[k] = L[i];
     i++;
     k++;
   }
-  while (j < subArr2Length) {
-    array[k] = arr2[j];
+
+  // Copy the remaining elements of
+  // R[], if there are any
+  while (j < lengthTwo) {
+    arr[k] = R[j];
     j++;
     k++;
   }
+};
+
+/* ========= BUBLE SORT ========= */
+export const bubbleSort = (array: Array<any>): SortReturnType => {
+  const moveJournal: Array<MoveJournalType> = [];
+  let swapped = true;
+  while (swapped) {
+    swapped = false;
+    for (let i = 0; i < array.length - 1; i++) {
+      addComparisonMove(i, i + 1, moveJournal);
+      if (array[i] > array[i + 1]) {
+        swapped = true;
+        swapAndSaveJournal(array, i, i + 1, moveJournal);
+      }
+    }
+  }
+  return { array, moveJournal };
+};
+
+/* ========= HEAP SORT ========= */
+export const heapSort = (array: Array<any>) => {
+  const moveJournal: Array<MoveJournalType> = [];
+  for (let i = Math.floor(array.length / 2) - 1; i >= 0; i--)
+    heapify(array, array.length, i, moveJournal);
+
+  for (let i = array.length - 1; i >= 0; i--) {
+    swapAndSaveJournal(array, 0, i, moveJournal);
+    heapify(array, i, 0, moveJournal);
+  }
+  return { array, moveJournal };
+};
+
+const heapify = (
+  array: Array<any>,
+  N: number,
+  i: number,
+  moveJournal: Array<MoveJournalType>
+) => {
+  let largest = i;
+  let left = 2 * i + 1;
+  let right = 2 * i + 2;
+  if (left < N && array[left] > array[largest]) largest = left;
+  if (right < N && array[right] > array[largest]) largest = right;
+  if (left < N) {
+    addComparisonMove(
+      largest,
+      left,
+      moveJournal,
+      right < N ? right : undefined
+    );
+  } else if (right < N) addComparisonMove(largest, right, moveJournal);
+
+  if (largest !== i) {
+    swapAndSaveJournal(array, i, largest, moveJournal);
+    heapify(array, N, largest, moveJournal);
+  }
+};
+
+/* ========= SELECTION SORT ========= */
+export const selectionSort = (array: Array<any>): SortReturnType => {
+  const moveJournal: Array<MoveJournalType> = [];
+  for (let i = 0; i < array.length - 1; i++) {
+    let minIdx = i;
+    for (let j = i + 1; j < array.length; j++) {
+      addComparisonMove(minIdx, j, moveJournal);
+      if (array[minIdx] > array[j]) minIdx = j;
+    }
+    swapAndSaveJournal(array, minIdx, i, moveJournal);
+  }
+  return { array, moveJournal };
 };

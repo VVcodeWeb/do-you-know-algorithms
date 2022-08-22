@@ -1,36 +1,54 @@
-import { Col, Row } from "antd";
-import gitLogo from "components/../../public/GitHub-logo.png";
+import { Divider, Grid } from "@mui/material";
+import gitLogo from "components/../../public/tl.webp";
+import linkedinLogo from "components/../../public/linkedin.webp";
+import { flex } from "PlayGround/PlayGroundHeader";
 const Footer = () => {
   return (
-    <div
+    <Grid
+      container
+      direction={"row"}
       style={{
+        position: "relative",
         width: "100%",
-        height: 50,
-        position: "absolute",
-        left: 0,
-        bottom: 0,
         paddingLeft: 15,
         paddingRight: 15,
-        borderTop: "1px solid #ccc",
         boxShadow: "0 3px 10px rgb(0 0 0 / 0.2)",
-        backgroundColor: "#fff",
       }}
     >
-      <Row justify="center">
-        <Col span={8}>
-          <a
-            href="https://www.flaticon.com/free-icons/algorithm"
-            title="algorithm icons"
-          >
-            Algorithm icons created by Freepik - Flaticon
-          </a>
-        </Col>
-        <Col>
-          <img src={gitLogo} alt="logo" className="" width={80} height={50} />
-        </Col>
-        <Col span={8}>Created by VV.</Col>
-      </Row>
-    </div>
+      <Grid
+        item
+        xs={4}
+        style={{
+          display: "flex",
+          flexDirection: "column-reverse",
+          alignContent: "flex-end",
+        }}
+      >
+        <a
+          href="https://www.flaticon.com/free-icons/algorithm"
+          title="algorithm icons"
+          style={{ color: "white" }}
+        >
+          Algorithm icons created by Freepik - Flaticon
+        </a>
+      </Grid>
+      <Grid item xs={4}>
+        <div style={{ paddingTop: 10, paddingBottom: 10, ...flex }}>
+          <img src={gitLogo} alt="logo" width={30} height={30} />
+          <Divider
+            orientation="vertical"
+            variant="middle"
+            flexItem
+            style={{
+              width: 1,
+              marginLeft: 5,
+              marginRight: 5,
+            }}
+          />
+          <img src={linkedinLogo} alt="logo" width={30} height={30} />
+        </div>
+      </Grid>
+    </Grid>
   );
 };
 
