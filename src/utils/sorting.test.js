@@ -1,5 +1,5 @@
 import { SWAP } from "const/constants";
-import { bubbleSort, heapSort, mergeSort, quickSort } from "utils/sorting";
+import { bubbleSort, heapSort, mergeSort, quickSort, selectionSort } from "utils/sorting";
 import { randomNumber } from "utils/utils";
 
 const generateRandomNumbers = () => {
@@ -72,6 +72,19 @@ describe("Sorting algorithms", () => {
             expect(array).toEqual(correctSortedArray)
         }
     })
+
+    it("Selection sort algorithm", () => {
+        for (let i = 0; i < arraysToTest.length; i++) {
+            const copyArrayToTest = arraysToTest[i].slice();
+            expect(copyArrayToTest).not.toBe(getCopySortedArray(copyArrayToTest))
+            const { array } = selectionSort(copyArrayToTest)
+            if (JSON.stringify(array) === JSON.stringify(arraysToTest[i]))
+                console.log("Arrays are equal before sorting")
+            const correctSortedArray = arraysToTest[i].slice().sort((a, b) => a - b)
+            const isSorted = JSON.stringify(array) === JSON.stringify(correctSortedArray)
+            expect(isSorted).toEqual(true)
+        }
+    })
 })
 const swap = (array, idx1, idx2) => {
     const temp = array[idx1];
@@ -97,7 +110,8 @@ describe("Move journals", () => {
                 if (move.action === SWAP)
                     swap(arrayToSort, move.indexOne, move.indexTwo)
             }
-            expect(arrayToSort).toEqual(array);
+
+            expect(arrayToSort).toEqual(getCopySortedArray(copyArrayToTest));
         }
     })
 
@@ -105,7 +119,7 @@ describe("Move journals", () => {
         for (let i = 0; i < arraysToTest.length; i++) {
             const copyArrayToTest = arraysToTest[i].slice();
             expect(copyArrayToTest).not.toBe(getCopySortedArray(copyArrayToTest))
-            const { array, moveJournal } = mergeSort({
+            const { moveJournal } = mergeSort({
                 array: copyArrayToTest,
                 left: 0,
                 right: copyArrayToTest.length - 1,
@@ -116,7 +130,8 @@ describe("Move journals", () => {
                 if (move.action === SWAP)
                     swap(arrayToSort, move.indexOne, move.indexTwo)
             }
-            expect(arrayToSort).toEqual(array);
+            const isSorted = JSON.stringify(arrayToSort) === JSON.stringify(getCopySortedArray(copyArrayToTest))
+            expect(isSorted).toEqual(true);
         }
     })
 
@@ -130,7 +145,7 @@ describe("Move journals", () => {
                 if (move.action === SWAP)
                     swap(arrayToSort, move.indexOne, move.indexTwo)
             }
-            expect(arrayToSort).toEqual(array);
+            expect(arrayToSort).toEqual(getCopySortedArray(copyArrayToTest));
         }
     })
     it("Heap sort move journal", () => {
@@ -143,7 +158,20 @@ describe("Move journals", () => {
                 if (move.action === SWAP)
                     swap(arrayToSort, move.indexOne, move.indexTwo)
             }
-            expect(arrayToSort).toEqual(array);
+            expect(arrayToSort).toEqual(getCopySortedArray(copyArrayToTest));
+        }
+    })
+    it("Selection sort move journal", () => {
+        for (let i = 0; i < arraysToTest.length; i++) {
+            const copyArrayToTest = arraysToTest[i].slice();
+            expect(copyArrayToTest).not.toBe(getCopySortedArray(copyArrayToTest))
+            const { array, moveJournal } = selectionSort(copyArrayToTest)
+            const arrayToSort = arraysToTest[i].slice()
+            for (let move of moveJournal) {
+                if (move.action === SWAP)
+                    swap(arrayToSort, move.indexOne, move.indexTwo)
+            }
+            expect(arrayToSort).toEqual(getCopySortedArray(copyArrayToTest));
         }
     })
 })

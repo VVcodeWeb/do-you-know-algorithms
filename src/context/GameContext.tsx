@@ -7,6 +7,7 @@ import {
   BUBBLE_SORT,
   MERGE_SORT,
   EASY,
+  SELECTION_SORT,
 } from "const/constants";
 import {
   State,
@@ -32,12 +33,47 @@ const intialState = {
   shouldRenderStop: false,
   difficulty: EASY as DifficultyType,
 };
-
+const getColor = (sort: string) => {
+  switch (sort) {
+    case QUICK_SORT:
+      return "#324851";
+    //return "#26DFD0";
+    case MERGE_SORT:
+      return "#86ac41";
+    //return "#B8EE30";
+    case BUBBLE_SORT:
+      return "#34675c";
+    //return "#F62AA0";
+    case HEAP_SORT:
+      return "#7da3a1";
+    //return "#F9D030";
+    case SELECTION_SORT:
+      return "#6CA2EA";
+    //return "#F9D030";
+    default:
+      throw new Error("Invalid sort name");
+  }
+};
+const generateOptions = (): OptionsType[] => {
+  const options = [];
+  const sortingPool = SORTING_POOL.slice();
+  let rndIdx;
+  while (options.length < 4) {
+    rndIdx = randomNumber(0, sortingPool.length - 1);
+    options.push({
+      sorting: sortingPool[rndIdx],
+      correct: options.length < 1,
+      visible: false,
+      color: getColor(sortingPool[rndIdx]),
+    });
+    sortingPool.splice(rndIdx, 1);
+  }
+  console.log({ options });
+  return shuffle(options);
+};
 const reducer = (state: State, action: Action): State | never => {
   switch (action.type) {
     case ACTION.NEW_ROUND:
-      const correctAnswer =
-        SORTING_POOL[randomNumber(0, SORTING_POOL.length - 1)];
       const scoreGained = action?.payload?.scoreGained ?? 0;
       return {
         ...state,
@@ -49,13 +85,7 @@ const reducer = (state: State, action: Action): State | never => {
         isGameOn: true,
         timerKey: state.timerKey + 1,
         isTimerTicking: false,
-        options: shuffle(
-          SORTING_POOL.map((sort) => ({
-            sorting: sort,
-            correct: sort === correctAnswer,
-            visible: false,
-          }))
-        ),
+        options: generateOptions(),
       };
     case ACTION.DISPLAY_ANSWERS:
       return {
@@ -74,6 +104,7 @@ const reducer = (state: State, action: Action): State | never => {
     case ACTION.RESET_GAME_PARAMS:
       return {
         ...intialState,
+        timerKey: state.timerKey + 1,
         score: {
           currentScore: 0,
           lastGainedScore: -1 * state.score.currentScore,
@@ -119,6 +150,7 @@ export const GameContext = React.createContext({
 const GameProvider = ({ children }: any) => {
   const [state, dispatch] = useReducer(reducer, intialState);
   const [storedUserGuess, setStoredUserGuess] = useState("");
+
   const startGame = () => dispatch({ type: ACTION.NEW_ROUND });
   const showAnswers = () => dispatch({ type: ACTION.DISPLAY_ANSWERS });
   const stopGame = () => dispatch({ type: ACTION.END_GAME });
@@ -127,8 +159,10 @@ const GameProvider = ({ children }: any) => {
     dispatch({ type: ACTION.RESET_GAME_PARAMS });
     dispatch({ type: ACTION.NEW_ROUND });
   };
-  const chooseDifficulty = (difficulty: DifficultyType) =>
-    dispatch({ type: ACTION.SET_DIFFICULTY, payload: { difficulty } });
+  const chooseDifficulty = (difficulty: DifficultyType) => {
+    if (difficulty !== state.difficulty)
+      dispatch({ type: ACTION.SET_DIFFICULTY, payload: { difficulty } });
+  };
   const updateRenderingStates = ({
     value,
     stateName,

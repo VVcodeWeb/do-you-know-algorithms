@@ -43,6 +43,7 @@ export type OptionsType = {
   sorting: string;
   correct: boolean;
   visible: boolean;
+  color: string;
 };
 export type MoveJournalType = {
   indexOne: number;
@@ -56,6 +57,10 @@ export type GameBarTypes = {
   value: number;
   id: string | number;
   color: string;
+};
+export type OptionType = {
+  handleAnswer: (userGuess: string) => void;
+  option: OptionsType;
 };
 export type DifficultyType = typeof HARD | typeof EASY;
 export type RenderStatesType = typeof IS_RENDERING | typeof SHOULD_RENDER_STOP;

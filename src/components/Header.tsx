@@ -1,12 +1,12 @@
-import { Col, Row } from "antd";
 import GameText from "components/GameText";
 import { InfoCircleOutlined } from "@ant-design/icons";
-import logo from "components/../../public/algorithm.png";
+import logo from "components/../../public/programming.png";
+import Grid2 from "@mui/material/Unstable_Grid2";
+import { flex } from "PlayGround/PlayGroundHeader";
 const Header = () => {
   return (
     <div
       style={{
-        borderBottom: "1px solid #ccc",
         boxShadow: "0 3px 10px rgb(0 0 0 / 0.2)",
         marginBottom: 5,
         minHeight: 70,
@@ -14,21 +14,36 @@ const Header = () => {
         alignItems: "stretch",
       }}
     >
-      <Row justify="space-around" align="middle" style={{ width: "100%" }}>
-        <Col span={3}>
-          <InfoCircleOutlined
-            style={{ fontSize: 40, color: "rgb(71, 211, 239)" }}
-          />
-        </Col>
-        <Col span={15} style={{ display: "inline-block" }}>
-          <GameText type="normal" styles={{ fontSize: 30 }}>
+      <Grid2
+        container
+        justifyContent="space-between"
+        direction={"row"}
+        alignItems="middle"
+        style={{ width: "100%", paddingLeft: 10, paddingRight: 10 }}
+        spacing={1}
+      >
+        <Grid2
+          md={10}
+          xs={10}
+          mdOffset={1}
+          xsOffset={0}
+          style={{
+            ...flex,
+            justifyContent: "flex-start",
+          }}
+        >
+          <GameText type="normal" styles={{ fontSize: 25 }}>
             Do you know THE algorithms?
           </GameText>
-        </Col>
-        <Col span={3} push={2}>
+        </Grid2>
+        <Grid2
+          md={1}
+          xsOffset={0}
+          style={{ ...flex, justifyContent: "flex-end" }}
+        >
           <img src={logo} alt="logo" className="" width={50} height={50} />
-        </Col>
-      </Row>
+        </Grid2>
+      </Grid2>
     </div>
   );
 };

@@ -1,86 +1,126 @@
-import { Card, Col, Row, Statistic } from "antd";
+import { Col, Row, Statistic } from "antd";
 import GameText from "components/GameText";
 import { ReactNode, useContext, useEffect, useRef } from "react";
-import Timer from "components/Timer";
-import { GameContext } from "PlayGround/GameContext";
-import { useScoreAnimation } from "PlayGround/hooks/useScoreAnimation";
+import { GameContext } from "context/GameContext";
+import { useScoreAnimation } from "hooks/useScoreAnimation";
 import { HARD, EASY } from "const/constants";
-import { useGameConfig } from "PlayGround/hooks/useGameConfig";
+import { useGameConfig } from "hooks/useGameConfig";
+import { useCookie } from "hooks/useCookie";
+import { CountdownCircleTimer } from "react-countdown-circle-timer";
+import { Card, CardContent, CardHeader, Typography, Grid } from "@mui/material";
+export const flex = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+};
 const HeaderSquare = ({
   children,
   title,
   icon,
+  subheader,
 }: {
   children: ReactNode;
   title: string;
   icon?: any;
+  subheader?: any;
 }) => {
+  const background = {
+    backgroundColor: "#3d3e9a",
+  };
+  const renderHeader = () => {
+    if (!icon) return title;
+    return (
+      <Grid container justifyContent={"space-between"}>
+        <GameText>{title}</GameText>
+        <GameText>
+          <div style={{ fontSize: 20 }}>{icon}</div>
+        </GameText>
+      </Grid>
+    );
+  };
   return (
-    <Col span={5} style={{ backgroundColor: "#F2F2F2" }}>
+    <Grid item md={3} xs={12}>
       <Card
-        bordered={false}
-        extra={icon}
-        title={
-          <GameText type="normal" styles={{ textTransform: "uppercase" }}>
-            {title}
-          </GameText>
-        }
-        style={{ height: "100%" }}
-        bodyStyle={{ display: "flex", justifyContent: "center" }}
+        sx={{ maxWidth: 400, height: "100%", ...background, margin: "0 auto" }}
+        elevation={10}
       >
-        {children}
+        <CardHeader
+          title={renderHeader()}
+          subheader={<GameText>{subheader}</GameText>}
+        />
+        <CardContent
+          style={{ ...flex, paddingTop: Boolean(subheader) ? 0 : 16 }}
+        >
+          {children}
+        </CardContent>
       </Card>
-    </Col>
+    </Grid>
   );
 };
 
+const Timer = () => {
+  const { timerKey, isTimerTicking, stopGame } = useContext(GameContext);
+  const { TIMER_DURATION } = useGameConfig();
+  return (
+    <CountdownCircleTimer
+      key={timerKey}
+      isPlaying={isTimerTicking}
+      onComplete={stopGame}
+      duration={TIMER_DURATION}
+      size={45}
+      colors={["#86AC97", "#CE3226"]}
+      strokeWidth={5}
+      colorsTime={[7, 0]}
+      trailColor={"#3d3e9a"}
+    >
+      {({ remainingTime }) => <GameText>{remainingTime}</GameText>}
+    </CountdownCircleTimer>
+  );
+};
 const PlayGroundHeader = () => {
   const { score, chooseDifficulty, isGameOn } = useContext(GameContext);
   const { difficultyIcon, easyTextStyle, hardTextStyle } = useGameConfig();
   const countElRef = useRef<HTMLDivElement>(null);
   const { animRef } = useScoreAnimation(countElRef);
+  const { bestStreak } = useCookie();
   useEffect(() => {
     if (score.lastGainedScore) animRef.current?.play();
   }, [animRef, score]);
   const cursorStyle = { cursor: !isGameOn ? "pointer" : "not-allowed" };
   return (
-    <Row justify={"center"} gutter={3} style={{ width: "100%" }}>
+    <Grid
+      container
+      spacing={{ xs: 1, sm: 2, md: 3 }}
+      justifyContent={"center"}
+      alignItems={"center"}
+      style={{ height: "100%" }}
+    >
       <HeaderSquare
         title={"Score"}
-        icon={<div style={{ fontSize: 20 }}>💯</div>}
+        icon={<>💯</>}
+        subheader={`Best streak: ${bestStreak}`}
       >
-        <div style={{ position: "absolute", left: 20, top: 0 }}></div>
         <div style={{ position: "relative" }}>
           <div
             style={{ position: "absolute", left: 20, top: 0 }}
             ref={countElRef}
           >
-            <Statistic
-              value={
-                score.lastGainedScore > 0
-                  ? "+" + score.lastGainedScore
-                  : score.lastGainedScore
-              }
-              precision={0}
-              valueStyle={{
+            <GameText
+              styles={{
                 fontSize: 14,
                 color: score.lastGainedScore > 0 ? "#3f8600" : "red",
               }}
-            />
+            >
+              +{score.lastGainedScore}
+            </GameText>
           </div>
-          <Statistic value={score.currentScore} precision={0} />
+          <GameText styles={{ fontSize: 25 }}>{score.currentScore}</GameText>
         </div>
       </HeaderSquare>
-      <HeaderSquare
-        title={"Timer"}
-        icon={<div style={{ fontSize: 20 }}>{""}⌛</div>}
-      >
+      <HeaderSquare title={"Timer"} icon={<>⌛</>}>
         <Timer />
       </HeaderSquare>
-      <HeaderSquare
-        title={"Difficulty"}
-        icon={<div style={{ fontSize: 20 }}>{difficultyIcon}</div>}
-      >
+      <HeaderSquare title={"Difficulty"} icon={difficultyIcon}>
         <div
           style={{
             display: "flex",
@@ -107,7 +147,7 @@ const PlayGroundHeader = () => {
           </GameText>
         </div>
       </HeaderSquare>
-    </Row>
+    </Grid>
   );
 };
 

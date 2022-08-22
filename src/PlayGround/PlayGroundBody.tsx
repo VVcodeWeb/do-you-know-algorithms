@@ -1,35 +1,51 @@
-import { Button, Col, Result, Row, Card } from "antd";
-
-import GameText from "components/GameText";
+import { Col, Result, Row } from "antd";
 import { SmileOutlined } from "@ant-design/icons";
 import {
   BUBBLE_SORT,
   GAME_BAR,
   HEAP_SORT,
   IS_RENDERING,
+  MAX_NUMBERS,
   MERGE_SORT,
   QUICK_SORT,
+  SELECTION_SORT,
   SWAP,
 } from "const/constants";
-import {
-  BarInComparison,
-  BarInSwap,
-  nonActiveBar,
-  optionStyle,
-} from "const/styles";
+import { BarInComparison, BarInSwap, nonActiveBar } from "const/styles";
 import Bar from "components/Bar";
-import { GameContext } from "PlayGround/GameContext";
-import { GameBarTypes, MoveJournalType } from "PlayGround/types";
+import { GameContext } from "context/GameContext";
+import { GameBarTypes, MoveJournalType, OptionType } from "PlayGround/types";
 import { useCallback, useContext } from "react";
 import { useEffect, useState } from "react";
-import { bubbleSort, heapSort, mergeSort, quickSort } from "utils/sorting";
+import {
+  bubbleSort,
+  heapSort,
+  mergeSort,
+  quickSort,
+  selectionSort,
+} from "utils/sorting";
 import { delay, generateRandomNumbers } from "utils/utils";
 import styles from "PlayGround/styles.module.css";
-import { useGameConfig } from "PlayGround/hooks/useGameConfig";
+import { useGameConfig } from "hooks/useGameConfig";
+import { useCookie } from "hooks/useCookie";
+import {
+  Button,
+  Paper,
+  Card,
+  CardContent,
+  CardActions,
+  CardHeader,
+  Grid,
+} from "@mui/material";
+import { flex } from "PlayGround/PlayGroundHeader";
+import GameText from "components/GameText";
+import PlayGroundOptions from "PlayGround/PlayGroundOptions";
 
 const PlayGroundBody = () => {
   const [currentBars, setCurrentBars] = useState<GameBarTypes[]>([]);
   const [moveJournal, setMoveJournal] = useState<MoveJournalType[]>([]);
+  const { bestStreak } = useCookie();
+
   const {
     isGameOn,
     showAnswers,
@@ -40,9 +56,10 @@ const PlayGroundBody = () => {
     renderStopped,
     score,
     restartGame,
+    timerKey,
+    handleAnswer,
   } = useContext(GameContext);
-  const { ANSWERS_AFTER_X_STEP, ANIMATION_DELAY, START_GAME_BUTTON_COLOR } =
-    useGameConfig();
+  const { ANSWERS_AFTER_X_STEP, ANIMATION_DELAY } = useGameConfig();
 
   useEffect(() => {
     const notVisibleOptions =
@@ -55,7 +72,6 @@ const PlayGroundBody = () => {
         arr,
         choosedSorting
       );
-      console.log({ array });
       setCurrentBars(randomBars);
       setMoveJournal(updatedMoveJournal);
     }
@@ -102,22 +118,24 @@ const PlayGroundBody = () => {
   }, [moveJournal]);
   const runSort = (array: number[], chosedSorting: string | undefined) => {
     switch (chosedSorting) {
-      case QUICK_SORT:
-        return quickSort({
-          array,
-          low: 0,
-          high: array.length - 1,
-          moveJournal: [],
-        });
       case BUBBLE_SORT:
         return bubbleSort(array);
       case HEAP_SORT:
         return heapSort(array);
+      case SELECTION_SORT:
+        return selectionSort(array);
       case MERGE_SORT:
         return mergeSort({
           array,
           left: 0,
           right: array.length - 1,
+          moveJournal: [],
+        });
+      case QUICK_SORT:
+        return quickSort({
+          array,
+          low: 0,
+          high: array.length - 1,
           moveJournal: [],
         });
       default:
@@ -126,25 +144,51 @@ const PlayGroundBody = () => {
   };
 
   const renderBoard = useCallback(() => {
-    if (!isGameOn && score.lastGainedScore > 0) {
+    //results
+    if (!isGameOn && timerKey > 0) {
       return (
-        <Card bordered={false}>
-          <Result
-            icon={<SmileOutlined />}
-            title={`Your score is ${score.currentScore}. Your streak is ${score.streak}`}
-            extra={
-              <Button type="primary" onClick={() => restartGame()}>
-                Restart game
+        <Card
+          elevation={5}
+          className={styles["restart_game"]}
+          style={{ color: "white" }}
+          sx={{ minWidth: 345, height: "auto" }}
+        >
+          <div
+            style={{
+              ...flex,
+              justifyContent: "space-between",
+              flexDirection: "column",
+              fontSize: "18px",
+            }}
+          >
+            <CardHeader title={<GameText>Wrong answer</GameText>} />
+            <CardContent>
+              <p>Your score is {score.currentScore}</p>
+              <p>Your streak is {score.streak}</p>
+            </CardContent>
+            <CardActions style={{ ...flex }}>
+              <Button
+                style={{ padding: 10, minWidth: 140 }}
+                onClick={() => restartGame()}
+                variant="outlined"
+              >
+                <GameText>Play again</GameText>
               </Button>
-            }
-          />
+            </CardActions>
+          </div>
         </Card>
       );
     }
-    if (isGameOn) {
-      return (
-        <Col span={23} style={{ height: "80%" }}>
-          <Row justify="center" style={{ height: "80%" }} align="bottom">
+    return (
+      <Grid
+        container
+        justifyContent="center"
+        alignItems="flex-end"
+        style={{ boxSizing: "border-box" }}
+        columns={MAX_NUMBERS}
+      >
+        {isGameOn ? (
+          <>
             {currentBars?.map((number, index) => (
               <Bar
                 value={number.value}
@@ -152,46 +196,44 @@ const PlayGroundBody = () => {
                 key={number.value}
               />
             ))}
-          </Row>
-        </Col>
-      );
-    }
-    return (
-      <Button
-        onClick={() => startGame()}
-        style={{
-          ...optionStyle,
-          minWidth: "0",
-          width: 250,
-          backgroundColor: START_GAME_BUTTON_COLOR,
-        }}
-      >
-        <GameText
-          styles={{ fontSize: "25px", color: "#fff", fontWeight: "bold" }}
-        >
-          Start the game
-        </GameText>
-      </Button>
+          </>
+        ) : (
+          <Button
+            variant="outlined"
+            onClick={() => startGame()}
+            style={{ color: "white", padding: 10, minWidth: 140 }}
+          >
+            <GameText styles={{ fontSize: 18, fontWeight: "bold" }}>
+              Play
+            </GameText>
+          </Button>
+        )}
+      </Grid>
     );
   }, [
-    START_GAME_BUTTON_COLOR,
     currentBars,
     isGameOn,
     restartGame,
     score.currentScore,
-    score.lastGainedScore,
     score.streak,
     startGame,
+    timerKey,
   ]);
-
   return (
-    <Row
-      align="middle"
-      justify="center"
+    <Grid
+      container
+      alignItems="middle"
+      justifyContent="center"
+      spacing={2}
       className={styles["play-ground__body"]}
     >
-      {renderBoard()}
-    </Row>
+      <Grid item style={{ boxSizing: "border-box" }}>
+        {renderBoard()}
+      </Grid>
+      <Grid item>
+        <PlayGroundOptions />
+      </Grid>
+    </Grid>
   );
 };
 

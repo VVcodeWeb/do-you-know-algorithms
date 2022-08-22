@@ -1,17 +1,12 @@
 .play-ground {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  width: 100%;
-  padding-top: 10px;
-  background-color: #fef5ff;
+  flex-grow: 2;
+  box-sizing: border-box;
 }
 
 .play-ground__body {
-  min-height: 460px;
   width: 100%;
-  background-color: #47d3ef;
-  border-top: 3px solid #47afff;
-  border-bottom: 3px solid #47afff;
+  box-sizing: border-box;
+}
+.restart_game {
+  background: linear-gradient(to bottom, #3d3e9a, 90%, #ce3226);
 }
