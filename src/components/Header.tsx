@@ -1,5 +1,4 @@
 import GameText from "components/GameText";
-import { InfoCircleOutlined } from "@ant-design/icons";
 import logo from "components/../../public/programming.png";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { flex } from "PlayGround/PlayGroundHeader";

@@ -22,10 +22,10 @@ export const getCookie = (name: CookiesType) => {
   let ca = decodedCookie.split(";");
   for (let i = 0; i < ca.length; i++) {
     let c = ca[i];
-    while (c.charAt(0) == " ") {
+    while (c.charAt(0) === " ") {
       c = c.substring(1);
     }
-    if (c.indexOf(n) == 0) {
+    if (c.indexOf(n) === 0) {
       return c.substring(n.length, c.length);
     }
   }

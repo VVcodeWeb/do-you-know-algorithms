@@ -1,4 +1,3 @@
-import { Col, Row, Statistic } from "antd";
 import GameText from "components/GameText";
 import { ReactNode, useContext, useEffect, useRef } from "react";
 import { GameContext } from "context/GameContext";
@@ -7,7 +6,7 @@ import { HARD, EASY } from "const/constants";
 import { useGameConfig } from "hooks/useGameConfig";
 import { useCookie } from "hooks/useCookie";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
-import { Card, CardContent, CardHeader, Typography, Grid } from "@mui/material";
+import { Card, CardContent, CardHeader, Grid } from "@mui/material";
 export const flex = {
   display: "flex",
   justifyContent: "center",

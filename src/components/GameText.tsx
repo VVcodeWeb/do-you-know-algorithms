@@ -1,4 +1,3 @@
-import { Typography } from "antd";
 import { CSSProperties, ReactNode } from "react";
 type GameTextTypes = {
   type?: "normal" | "title";

@@ -1,7 +1,6 @@
-import { COOKIE_BEST_STREAK, EASY } from "const/constants";
+import { EASY } from "const/constants";
 import { GameContext } from "context/GameContext";
-import { useContext, useEffect, useState } from "react";
-import { getCookie } from "utils/utils";
+import { useContext } from "react";
 
 export const useGameConfig = () => {
   const { difficulty } = useContext(GameContext);

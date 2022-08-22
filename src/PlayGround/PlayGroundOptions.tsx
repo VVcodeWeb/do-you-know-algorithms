@@ -1,10 +1,8 @@
-import { Col, Row } from "antd";
 import { useContext } from "react";
 import { GameContext } from "context/GameContext";
 import GameText from "components/GameText";
-import { getColor } from "utils/utils";
 import { OptionType } from "PlayGround/types";
-import { Box, Button, Grid, Paper } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 import { flex } from "PlayGround/PlayGroundHeader";
 const Option = ({ option, handleAnswer }: OptionType) => {
   return (

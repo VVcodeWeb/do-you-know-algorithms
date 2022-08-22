@@ -1,5 +1,3 @@
-import { Col, Result, Row } from "antd";
-import { SmileOutlined } from "@ant-design/icons";
 import {
   BUBBLE_SORT,
   GAME_BAR,
@@ -14,7 +12,7 @@ import {
 import { BarInComparison, BarInSwap, nonActiveBar } from "const/styles";
 import Bar from "components/Bar";
 import { GameContext } from "context/GameContext";
-import { GameBarTypes, MoveJournalType, OptionType } from "PlayGround/types";
+import { GameBarTypes, MoveJournalType } from "PlayGround/types";
 import { useCallback, useContext } from "react";
 import { useEffect, useState } from "react";
 import {
@@ -27,10 +25,8 @@ import {
 import { delay, generateRandomNumbers } from "utils/utils";
 import styles from "PlayGround/styles.module.css";
 import { useGameConfig } from "hooks/useGameConfig";
-import { useCookie } from "hooks/useCookie";
 import {
   Button,
-  Paper,
   Card,
   CardContent,
   CardActions,
@@ -44,7 +40,6 @@ import PlayGroundOptions from "PlayGround/PlayGroundOptions";
 const PlayGroundBody = () => {
   const [currentBars, setCurrentBars] = useState<GameBarTypes[]>([]);
   const [moveJournal, setMoveJournal] = useState<MoveJournalType[]>([]);
-  const { bestStreak } = useCookie();
 
   const {
     isGameOn,
@@ -57,7 +52,6 @@ const PlayGroundBody = () => {
     score,
     restartGame,
     timerKey,
-    handleAnswer,
   } = useContext(GameContext);
   const { ANSWERS_AFTER_X_STEP, ANIMATION_DELAY } = useGameConfig();
 
@@ -68,10 +62,7 @@ const PlayGroundBody = () => {
       const randomBars = generateRandomNumbers();
       const arr = randomBars.map((bar) => bar.value);
       const choosedSorting = options.find((option) => option.correct)?.sorting;
-      const { array, moveJournal: updatedMoveJournal } = runSort(
-        arr,
-        choosedSorting
-      );
+      const { moveJournal: updatedMoveJournal } = runSort(arr, choosedSorting);
       setCurrentBars(randomBars);
       setMoveJournal(updatedMoveJournal);
     }

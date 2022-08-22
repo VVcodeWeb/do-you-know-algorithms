@@ -27,28 +27,6 @@ export const ACTION = {
   SET_DIFFICULTY: "setDifficulty" as "setDifficulty",
   RESET_GAME_PARAMS: "restartGame" as "restartGame",
 };
-type SortingType = {
-  name: string;
-  worstCase: string;
-  bestCase: string;
-  averageCase: string;
-  worstCaseSpace: string;
-};
-const quickSort: SortingType = {
-  name: QUICK_SORT,
-  bestCase: BIG_O_N_LOG_N,
-  worstCase: BIG_O_N_2,
-  averageCase: BIG_O_N_LOG_N,
-  worstCaseSpace: BIG_O_N,
-};
-
-const mergeSort: SortingType = {
-  name: MERGE_SORT,
-  bestCase: BIG_O_N_LOG_N,
-  worstCase: BIG_O_N_LOG_N,
-  averageCase: BIG_O_N_LOG_N,
-  worstCaseSpace: BIG_O_N,
-};
 
 export const SORTING_POOL = [
   QUICK_SORT,
