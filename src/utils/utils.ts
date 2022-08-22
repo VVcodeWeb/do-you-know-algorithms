@@ -37,7 +37,7 @@ export const randomNumber = (min: number, max: number) =>
 export const generateRandomNumbers = (): GameBarTypes[] => {
   let arr = [];
   while (arr.length < MAX_NUMBERS) {
-    let r = randomNumber(10, 400);
+    let r = randomNumber(10, 300);
     if (arr.indexOf(r) === -1) arr.push(r);
   }
   if (JSON.stringify(arr) === JSON.stringify(arr.slice().sort((a, b) => a - b)))

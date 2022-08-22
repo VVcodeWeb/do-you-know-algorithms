@@ -7,15 +7,15 @@ const PlayGround = () => {
   return (
     <Grid
       container
-      spacing={2}
       direction="column"
       justifyContent="flex-begin"
+      spacing={1}
       className={styles["play-ground"]}
     >
-      <Grid item xs={12} /* style={{ width: "100%" }} */>
+      <Grid item xs={3} style={{ marginTop: 0 }}>
         <PlayGroundHeader />
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={8}>
         <PlayGroundBody />
       </Grid>
     </Grid>

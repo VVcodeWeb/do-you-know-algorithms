@@ -40,7 +40,7 @@ const HeaderSquare = ({
   return (
     <Grid item md={3} xs={12}>
       <Card
-        sx={{ maxWidth: 400, height: "100%", ...background, margin: "0 auto" }}
+        sx={{ maxWidth: 400, ...background, margin: "0 auto" }}
         elevation={10}
       >
         <CardHeader
@@ -92,7 +92,6 @@ const PlayGroundHeader = () => {
       spacing={{ xs: 1, sm: 2, md: 3 }}
       justifyContent={"center"}
       alignItems={"center"}
-      style={{ height: "100%" }}
     >
       <HeaderSquare
         title={"Score"}

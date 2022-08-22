@@ -8,7 +8,7 @@ const Header = () => {
       style={{
         boxShadow: "0 3px 10px rgb(0 0 0 / 0.2)",
         marginBottom: 5,
-        minHeight: 70,
+        minHeight: 50,
         display: "flex",
         alignItems: "stretch",
       }}
@@ -40,7 +40,7 @@ const Header = () => {
           xsOffset={0}
           style={{ ...flex, justifyContent: "flex-end" }}
         >
-          <img src={logo} alt="logo" className="" width={50} height={50} />
+          <img src={logo} alt="logo" className="" width={40} height={40} />
         </Grid2>
       </Grid2>
     </div>
