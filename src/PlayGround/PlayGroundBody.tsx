@@ -150,8 +150,12 @@ const PlayGroundBody = () => {
       >
         <CardHeader title={<GameText>Wrong answer</GameText>} />
         <CardContent>
-          <p>Your score is {score.currentScore}</p>
-          <p>Your streak is {score.streak}</p>
+          <p>
+            <GameText>Your score is {score.currentScore}</GameText>
+          </p>
+          <p>
+            <GameText>Your streak is {score.streak}</GameText>
+          </p>
         </CardContent>
         <CardActions style={{ ...flex }}>
           <Button
