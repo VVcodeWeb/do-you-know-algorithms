@@ -1,6 +1,7 @@
+import Grid2 from "@mui/material/Unstable_Grid2";
+
 import GameText from "components/GameText";
 import logo from "components/../../public/programming.png";
-import Grid2 from "@mui/material/Unstable_Grid2";
 import { flex } from "PlayGround/PlayGroundHeader";
 const Header = () => {
   return (
@@ -23,7 +24,6 @@ const Header = () => {
       >
         <Grid2
           md={10}
-          xs={10}
           mdOffset={1}
           xsOffset={0}
           style={{
@@ -31,7 +31,7 @@ const Header = () => {
             justifyContent: "flex-start",
           }}
         >
-          <GameText type="normal" styles={{ fontSize: 25 }}>
+          <GameText styles={{ fontSize: 25 }}>
             Do you know THE algorithms?
           </GameText>
         </Grid2>

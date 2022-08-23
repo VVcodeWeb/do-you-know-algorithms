@@ -1,12 +1,16 @@
-import GameText from "components/GameText";
 import { ReactNode, useContext, useEffect, useRef } from "react";
+
+import { Card, CardContent, CardHeader, Grid } from "@mui/material";
+import { CountdownCircleTimer } from "react-countdown-circle-timer";
+
+import GameText from "components/GameText";
 import { GameContext } from "context/GameContext";
 import { useScoreAnimation } from "hooks/useScoreAnimation";
 import { HARD, EASY } from "const/constants";
 import { useGameConfig } from "hooks/useGameConfig";
-import { useCookie } from "hooks/useCookie";
-import { CountdownCircleTimer } from "react-countdown-circle-timer";
-import { Card, CardContent, CardHeader, Grid } from "@mui/material";
+import { useCookies } from "hooks/useCookies";
+import styles from "PlayGround/styles.module.css";
+
 export const flex = {
   display: "flex",
   justifyContent: "center",
@@ -29,7 +33,7 @@ const HeaderSquare = ({
   const renderHeader = () => {
     if (!icon) return title;
     return (
-      <Grid container justifyContent={"space-between"}>
+      <Grid container justifyContent="space-between">
         <GameText>{title}</GameText>
         <GameText>
           <div style={{ fontSize: 20 }}>{icon}</div>
@@ -81,69 +85,59 @@ const PlayGroundHeader = () => {
   const { difficultyIcon, easyTextStyle, hardTextStyle } = useGameConfig();
   const countElRef = useRef<HTMLDivElement>(null);
   const { animRef } = useScoreAnimation(countElRef);
-  const { bestStreak } = useCookie();
+  const { bestStreak } = useCookies();
+  const cursorStyle = { cursor: !isGameOn ? "pointer" : "not-allowed" };
+  const animNumberStyle = {
+    fontSize: 14,
+    color: score.lastGainedScore > 0 ? "#3f8600" : "red",
+  };
+
   useEffect(() => {
     if (score.lastGainedScore) animRef.current?.play();
   }, [animRef, score]);
-  const cursorStyle = { cursor: !isGameOn ? "pointer" : "not-allowed" };
   return (
     <Grid
       container
       spacing={{ xs: 1, sm: 2, md: 3 }}
-      justifyContent={"center"}
-      alignItems={"center"}
+      justifyContent="center"
+      alignItems="center"
     >
       <HeaderSquare
-        title={"Score"}
+        title="Score"
         icon={<>💯</>}
         subheader={`Best streak: ${bestStreak}`}
       >
         <div style={{ position: "relative" }}>
-          <div
-            style={{ position: "absolute", left: 20, top: 0 }}
-            ref={countElRef}
-          >
-            <GameText
-              styles={{
-                fontSize: 14,
-                color: score.lastGainedScore > 0 ? "#3f8600" : "red",
-              }}
-            >
+          <div className={styles["play-ground__header__anim"]} ref={countElRef}>
+            <GameText styles={{ ...animNumberStyle }}>
               +{score.lastGainedScore}
             </GameText>
           </div>
           <GameText styles={{ fontSize: 25 }}>{score.currentScore}</GameText>
         </div>
       </HeaderSquare>
-      <HeaderSquare title={"Timer"} icon={<>⌛</>}>
+      <HeaderSquare title="Timer" icon={<>⌛</>}>
         <Timer />
       </HeaderSquare>
-      <HeaderSquare title={"Difficulty"} icon={difficultyIcon}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-around",
-            width: "100%",
-            position: "relative",
-          }}
-        >
-          <GameText type="normal" styles={cursorStyle}>
-            <span
+      <HeaderSquare title="Difficulty" icon={difficultyIcon}>
+        <Grid container justifyContent="space-around">
+          <Grid item>
+            <GameText
+              styles={{ ...hardTextStyle, ...cursorStyle }}
               onClick={!isGameOn ? () => chooseDifficulty(HARD) : undefined}
-              style={hardTextStyle}
             >
               Hard
-            </span>
-          </GameText>
-          <GameText type="normal" styles={cursorStyle}>
-            <span
+            </GameText>
+          </Grid>
+          <Grid item>
+            <GameText
+              styles={{ ...easyTextStyle, ...cursorStyle }}
               onClick={!isGameOn ? () => chooseDifficulty(EASY) : undefined}
-              style={easyTextStyle}
             >
               Easy
-            </span>
-          </GameText>
-        </div>
+            </GameText>
+          </Grid>
+        </Grid>
       </HeaderSquare>
     </Grid>
   );

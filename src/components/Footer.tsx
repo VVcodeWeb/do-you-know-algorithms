@@ -34,7 +34,16 @@ const Footer = () => {
       </Grid>
       <Grid item xs={4}>
         <div style={{ paddingTop: 10, paddingBottom: 10, ...flex }}>
-          <img src={gitLogo} alt="logo" width={30} height={30} />
+          <img
+            src={gitLogo}
+            onClick={() =>
+              window.open("https://github.com/VVcodeWeb", "_blank")
+            }
+            alt="logo"
+            width={30}
+            height={30}
+            style={{ cursor: "pointer" }}
+          />
           <Divider
             orientation="vertical"
             variant="middle"
@@ -45,7 +54,16 @@ const Footer = () => {
               marginRight: 5,
             }}
           />
-          <img src={linkedinLogo} alt="logo" width={30} height={30} />
+          <img
+            onClick={() =>
+              window.open("https://www.linkedin.com/in/vvcode", "_blank")
+            }
+            style={{ cursor: "pointer" }}
+            src={linkedinLogo}
+            alt="logo"
+            width={30}
+            height={30}
+          />
         </div>
       </Grid>
     </Grid>

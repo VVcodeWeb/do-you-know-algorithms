@@ -7,7 +7,7 @@ import {
 import { GameContext } from "context/GameContext";
 import { useContext, useEffect, useState } from "react";
 import { getCookie, setCookie } from "utils/utils";
-export const useCookie = () => {
+export const useCookies = () => {
   const [visible, setVisible] = useState(false);
   const [bestStreak, setBestStreak] = useState<number>(0);
   const { score } = useContext(GameContext);

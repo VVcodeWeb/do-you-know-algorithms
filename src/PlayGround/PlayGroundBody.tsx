@@ -1,3 +1,13 @@
+import { useEffect, useState, useContext } from "react";
+import {
+  Button,
+  Card,
+  CardContent,
+  CardActions,
+  CardHeader,
+  Grid,
+} from "@mui/material";
+
 import {
   BUBBLE_SORT,
   GAME_BAR,
@@ -13,8 +23,6 @@ import { BarInComparison, BarInSwap, nonActiveBar } from "const/styles";
 import Bar from "components/Bar";
 import { GameContext } from "context/GameContext";
 import { GameBarTypes, MoveJournalType } from "PlayGround/types";
-import { useCallback, useContext } from "react";
-import { useEffect, useState } from "react";
 import {
   bubbleSort,
   heapSort,
@@ -25,14 +33,6 @@ import {
 import { delay, generateRandomNumbers } from "utils/utils";
 import styles from "PlayGround/styles.module.css";
 import { useGameConfig } from "hooks/useGameConfig";
-import {
-  Button,
-  Card,
-  CardContent,
-  CardActions,
-  CardHeader,
-  Grid,
-} from "@mui/material";
 import { flex } from "PlayGround/PlayGroundHeader";
 import GameText from "components/GameText";
 import PlayGroundOptions from "PlayGround/PlayGroundOptions";
@@ -134,82 +134,75 @@ const PlayGroundBody = () => {
     }
   };
 
-  const renderBoard = useCallback(() => {
-    //results
-    if (!isGameOn && timerKey > 0) {
-      return (
-        <Card
-          elevation={5}
-          className={styles["restart_game"]}
-          style={{ color: "white" }}
-          sx={{ minWidth: 345, height: "auto" }}
-        >
-          <div
-            style={{
-              ...flex,
-              justifyContent: "space-between",
-              flexDirection: "column",
-              fontSize: "18px",
-            }}
-          >
-            <CardHeader title={<GameText>Wrong answer</GameText>} />
-            <CardContent>
-              <p>Your score is {score.currentScore}</p>
-              <p>Your streak is {score.streak}</p>
-            </CardContent>
-            <CardActions style={{ ...flex }}>
-              <Button
-                style={{ padding: 10, minWidth: 140 }}
-                onClick={() => restartGame()}
-                variant="outlined"
-              >
-                <GameText>Play again</GameText>
-              </Button>
-            </CardActions>
-          </div>
-        </Card>
-      );
-    }
-    return (
-      <Grid
-        container
-        justifyContent="center"
-        alignItems="flex-end"
-        style={{ boxSizing: "border-box" }}
-        columns={MAX_NUMBERS}
+  const endGameBoard = (
+    <Card
+      elevation={5}
+      className={styles["restart_game"]}
+      sx={{ minWidth: 345, height: "auto" }}
+    >
+      <div
+        style={{
+          ...flex,
+          justifyContent: "space-between",
+          flexDirection: "column",
+          fontSize: "18px",
+        }}
       >
-        {isGameOn ? (
-          <>
-            {currentBars?.map((number, index) => (
-              <Bar
-                value={number.value}
-                color={number.color}
-                key={number.value}
-              />
-            ))}
-          </>
-        ) : (
+        <CardHeader title={<GameText>Wrong answer</GameText>} />
+        <CardContent>
+          <p>Your score is {score.currentScore}</p>
+          <p>Your streak is {score.streak}</p>
+        </CardContent>
+        <CardActions style={{ ...flex }}>
           <Button
+            style={{ padding: 10, minWidth: 140 }}
+            onClick={() => restartGame()}
             variant="outlined"
-            onClick={() => startGame()}
-            style={{ color: "white", padding: 10, minWidth: 140 }}
           >
-            <GameText styles={{ fontSize: 18, fontWeight: "bold" }}>
-              Play
-            </GameText>
+            <GameText>Play again</GameText>
           </Button>
-        )}
-      </Grid>
-    );
-  }, [
-    currentBars,
-    isGameOn,
-    restartGame,
-    score.currentScore,
-    score.streak,
-    startGame,
-    timerKey,
-  ]);
+        </CardActions>
+      </div>
+    </Card>
+  );
+
+  const playGameButtonBoard = (
+    <Grid
+      container
+      justifyContent="center"
+      alignItems="flex-end"
+      style={{ boxSizing: "border-box" }}
+      columns={MAX_NUMBERS}
+    >
+      <Button
+        variant="outlined"
+        onClick={() => startGame()}
+        style={{ color: "white", padding: 10, minWidth: 140 }}
+      >
+        <GameText styles={{ fontSize: 18, fontWeight: "bold" }}>Play</GameText>
+      </Button>
+    </Grid>
+  );
+
+  const liveGameBoard = (
+    <Grid
+      container
+      justifyContent="center"
+      alignItems="flex-end"
+      style={{ boxSizing: "border-box" }}
+      columns={MAX_NUMBERS}
+    >
+      {currentBars?.map((number, index) => (
+        <Bar value={number.value} color={number.color} key={number.value} />
+      ))}
+    </Grid>
+  );
+
+  const rendernBoard = () => {
+    if (!isGameOn && timerKey > 0) return endGameBoard;
+    if (isGameOn) return liveGameBoard;
+    return playGameButtonBoard;
+  };
   return (
     <Grid
       container
@@ -219,7 +212,7 @@ const PlayGroundBody = () => {
       className={styles["play-ground__body"]}
     >
       <Grid item style={{ boxSizing: "border-box" }}>
-        {renderBoard()}
+        {rendernBoard()}
       </Grid>
       <Grid item>
         <PlayGroundOptions />

@@ -1,5 +1,5 @@
-import { GAME_BAR } from "const/constants";
 import { CSSProperties } from "react";
+import { GAME_BAR } from "const/constants";
 
 const Bar = ({ value, color }: { value: number; color: string }) => {
   const styles: CSSProperties = {

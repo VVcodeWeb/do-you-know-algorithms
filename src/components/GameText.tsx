@@ -1,13 +1,15 @@
 import { CSSProperties, ReactNode } from "react";
 type GameTextTypes = {
-  type?: "normal" | "title";
-  level?: 3 | 5 | 1 | 2 | 4 | undefined;
   children: ReactNode;
   styles?: CSSProperties;
+  onClick?: any;
 };
-const GameText = ({ children, styles }: GameTextTypes) => {
+const GameText = ({ children, styles, onClick }: GameTextTypes) => {
   return (
-    <span style={{ fontFamily: "Machine Gunk", color: "#fff", ...styles }}>
+    <span
+      onClick={onClick}
+      style={{ fontFamily: "Machine Gunk", color: "#fff", ...styles }}
+    >
       {children}
     </span>
   );

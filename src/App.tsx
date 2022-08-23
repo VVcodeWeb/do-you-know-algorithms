@@ -1,13 +1,14 @@
+import { Button, Drawer, Grid } from "@mui/material";
+
 import "App.css";
 import Footer from "components/Footer";
 import Header from "components/Header";
-
 import PlayGround from "PlayGround";
-import { useCookie } from "hooks/useCookie";
-import { Button, Drawer, Grid } from "@mui/material";
+import { useCookies } from "hooks/useCookies";
 import GameText from "components/GameText";
+
 function App() {
-  const { visible, handleAccepted } = useCookie();
+  const { visible, handleAccepted } = useCookies();
   return (
     <div className="main">
       <Drawer
@@ -17,7 +18,7 @@ function App() {
       >
         <Grid
           container
-          justifyContent={"space-around"}
+          justifyContent="space-around"
           alignItems="center"
           style={{
             minHeight: 50,

@@ -12,13 +12,13 @@ export const useGameConfig = () => {
     color: "grey",
     fontSize: 15,
   };
-  const TIMER_DURATION = difficulty === EASY ? 20 : 10;
+  const TIMER_DURATION = difficulty === EASY ? 15 : 7;
   const hardTextStyle =
     difficulty === EASY ? notChoosedDifficultyStyles : choosedDifficultyStyles;
   const easyTextStyle =
     difficulty === EASY ? choosedDifficultyStyles : notChoosedDifficultyStyles;
   const difficultyIcon = difficulty === EASY ? "😌" : "😳";
-  const ANSWERS_AFTER_X_STEP = difficulty === EASY ? 6 : 3;
+  const ANSWERS_AFTER_X_STEP = difficulty === EASY ? 5 : 0;
   const ANIMATION_DELAY = difficulty === EASY ? 150 : 50;
   const START_GAME_BUTTON_COLOR = difficulty === EASY ? "green" : "#CE3226";
 

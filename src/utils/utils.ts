@@ -1,3 +1,4 @@
+import CSS from "csstype";
 import {
   COMPARISON,
   COOKIE_ALLOW_COOKIE,
@@ -7,8 +8,8 @@ import {
 } from "const/constants";
 import { nonActiveBar } from "const/styles";
 import { GameBarTypes, MoveJournalType } from "PlayGround/types";
-import CSS from "csstype";
 type CookiesType = typeof COOKIE_ALLOW_COOKIE | typeof COOKIE_BEST_STREAK;
+
 export const setCookie = (name: CookiesType, value: string) => {
   const d = new Date();
   const days = name === COOKIE_ALLOW_COOKIE ? 365 : 30;
@@ -37,7 +38,7 @@ export const randomNumber = (min: number, max: number) =>
 export const generateRandomNumbers = (): GameBarTypes[] => {
   let arr = [];
   while (arr.length < MAX_NUMBERS) {
-    let r = randomNumber(10, 300);
+    let r = randomNumber(10, 280);
     if (arr.indexOf(r) === -1) arr.push(r);
   }
   if (JSON.stringify(arr) === JSON.stringify(arr.slice().sort((a, b) => a - b)))

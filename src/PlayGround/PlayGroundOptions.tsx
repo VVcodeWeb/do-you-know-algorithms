@@ -1,9 +1,11 @@
 import { useContext } from "react";
+import { Button, Grid } from "@mui/material";
+
 import { GameContext } from "context/GameContext";
 import GameText from "components/GameText";
 import { OptionType } from "PlayGround/types";
-import { Button, Grid } from "@mui/material";
 import { flex } from "PlayGround/PlayGroundHeader";
+
 const Option = ({ option, handleAnswer }: OptionType) => {
   return (
     <Grid item md={6} xs={12} style={{ ...flex }}>
@@ -23,11 +25,9 @@ const Option = ({ option, handleAnswer }: OptionType) => {
       >
         <GameText
           styles={{
-            fontSize: "20px",
-            color: "#fff",
+            fontSize: "19px",
             fontWeight: "bold",
           }}
-          type={"normal"}
         >
           {option.sorting}
         </GameText>
@@ -38,7 +38,7 @@ const Option = ({ option, handleAnswer }: OptionType) => {
 export const PlayGroundOptions = () => {
   const { options, handleAnswer } = useContext(GameContext);
   return (
-    <Grid container spacing={{ xs: 1, sm: 2, md: 2 }}>
+    <Grid container spacing={1}>
       {options.map((option, index) => {
         return (
           <Option

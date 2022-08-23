@@ -10,3 +10,9 @@
 .restart_game {
   background: linear-gradient(to bottom, #3d3e9a, 90%, #ce3226);
 }
+
+.play-ground__header__anim {
+  position: absolute;
+  left: 20;
+  top: 0;
+}
